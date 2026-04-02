@@ -1,333 +1,205 @@
-import React, { useState, useRef } from 'react';
-import {
-  View, Text, ScrollView, TouchableOpacity, Linking, StyleSheet,
-  SafeAreaView, StatusBar, TextInput, ActivityIndicator,
-  KeyboardAvoidingView, Platform, Animated,
-} from 'react-native';
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FHS KI-Navigator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        .category-card { transition: all 0.2s; }
+        .category-card:active { transform: scale(0.95); }
+    </style>
+</head>
+<body class="bg-white text-[#1A1A2E]">
 
-// ─── CONFIG ──────────────────────────────────────────────────────────────────
-// ⚠️  Für Produktion: API-Key niemals im Client speichern → Backend-Proxy nutzen.
-const ANTHROPIC_API_KEY = 'YOUR_API_KEY_HERE';
-const MODEL = 'claude-sonnet-4-20250514';
+<div id="app" class="max-w-md mx-auto min-h-screen flex flex-col">
+    <header class="flex justify-between items-center px-5 py-4 border-b border-gray-100">
+        <div>
+            <h1 class="text-xl font-bold tracking-tight">FHS KI-Navigator</h1>
+            <p id="header-sub" class="text-[11px] text-gray-400 mt-0.5">Dein Lern-Guide · Term 4</p>
+        </div>
+        <button id="lang-toggle" class="bg-[#1A1A2E] text-white px-4 py-1.5 rounded-full text-xs font-bold">EN</button>
+    </header>
 
-const SYSTEM_PROMPT = `Du bist der "FHS KI-Navigator" für Schüler (9–16 J.) an der Future Human School Bali.
-Deine einzige Aufgabe: Empfehle passende Tools aus dem "Term 4 Learning Resources Guide".
+    <main id="main-content" class="flex-1 px-5 pt-5 pb-10">
+        <section class="mb-6">
+            <h3 id="search-label" class="text-xs font-bold mb-2 uppercase tracking-wider text-gray-500">🤖 KI-Suche</h3>
+            <div class="flex gap-2">
+                <input id="search-input" type="text" class="flex-1 bg-gray-100 border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-blue-400" placeholder="z.B. „Ich brauche Hilfe in Mathe“...">
+                <button id="search-btn" class="bg-[#1A1A2E] text-white w-12 h-12 rounded-xl flex items-center justify-center font-bold text-xl">↗</button>
+            </div>
+            <div id="ai-result" class="hidden mt-3 p-4 bg-blue-50 border border-blue-100 rounded-xl text-sm leading-relaxed text-[#1A1A2E]"></div>
+        </section>
 
-STRIKTE REGELN:
-- KEINE Begrüßung, KEINE Einleitung, KEIN Abschluss.
-- Antworte DIREKT mit max. 3–4 Tool-Empfehlungen.
-- Format pro Tool: [Emoji] **Toolname**: Ein motivierender Satz für Kids (max. 12 Wörter).
-- Nutze NUR diese verifizierten Tools: School.AI, Seneca Learning, Khan Academy, White Rose Maths,
-  TT Rockstars, Prodigy, Good & Beautiful, AskNature.org, TED-Ed Biomimicry, The LAUNCH Cycle,
-  Michael Pawlyn TED Talk, Rethinking Packaging, Pixar in a Box, Pobble, CommonLit, Newsela,
-  National Centre for Writing, Code.org, Turtle Conservation, Ocean Plastic Pollution,
-  Kembali Ke Hutan, Moringa TREELOGY, Earth School, Permaculture Masterclass, Harvard Free Courses,
-  MIT OpenCourseWare, CS50 Harvard, OpenLearn, Public Speaking 101, Power of Film.
-- Antworte in der Sprache der Anfrage (DE oder EN).
-- Wenn kein Tool passt: "Dazu gibt es nichts im Guide. Frag einen menschlichen Guide!"`;
+        <div class="flex items-center gap-3 my-6">
+            <div class="flex-1 h-[1px] bg-gray-100"></div>
+            <span id="divider-text" class="text-[11px] font-semibold text-gray-300 uppercase">oder stöbern</span>
+            <div class="flex-1 h-[1px] bg-gray-100"></div>
+        </div>
 
-// ─── DATA ────────────────────────────────────────────────────────────────────
+        <h3 id="browse-label" class="text-xs font-bold mb-3 uppercase tracking-wider text-gray-500">Nach Kategorie</h3>
+        <div id="categories-grid" class="grid grid-cols-2 gap-3">
+            </div>
 
-const TOOLS = {
-  maths: [
-    { icon: '🤖', name: 'School.AI', de: 'KI-Mathetutor mit Tipps, Erklärungen und Rechenwegen.', en: 'AI maths tutor with hints and worked examples.', url: 'https://schoolai.com', badge: { de: 'Login bei Jak', en: 'Login via Jak' } },
-    { icon: '🚀', name: 'Seneca Learning', de: 'Adaptives Training — wird schwieriger, je besser du wirst.', en: 'Adaptive revision that gets harder as you improve.', url: 'https://senecalearning.com', badge: { de: '11–16 · kostenlos', en: '11–16 · free' } },
-    { icon: '🎓', name: 'Khan Academy', de: 'Videos und Übungen für Mathe auf jedem Niveau.', en: 'Self-paced videos and exercises for all maths levels.', url: 'https://khanacademy.org/math', badge: { de: 'Alle Altersgruppen', en: 'All ages · free' } },
-    { icon: '📝', name: 'White Rose Maths', de: 'Kostenlose Unterrichtsvideos und Arbeitsblätter.', en: 'Free lesson videos and structured worksheets.', url: 'https://whiteroseeducation.com', badge: { de: 'Alle Altersgruppen', en: 'All ages · free' } },
-    { icon: '🎮', name: 'TT Rockstars & Prodigy', de: 'Einmaleins-Spiele — wirklich Spaß!', en: 'Times tables and number games — genuinely fun.', url: 'https://ttrockstars.com', badge: { de: '9–14 · Login bei Jak', en: '9–14 · Login via Jak' } },
-    { icon: '📘', name: 'Good & Beautiful', de: 'Kostenlose ausdruckbare Mathe-Arbeitshefte.', en: 'Free printable maths workbooks for all levels.', url: 'https://goodandbeautiful.com', badge: { de: 'Alle Altersgruppen', en: 'All ages · free' } },
-  ],
-  biomimicry: [
-    { icon: '🌿', name: 'AskNature.org', de: 'Suchmaschine für Natur-Lösungen — suche "wasserdicht".', en: 'Search nature\'s solutions — try "waterproof".', url: 'https://asknature.org', badge: { de: 'Alle Altersgruppen', en: 'All ages · explore' } },
-    { icon: '💡', name: 'TED-Ed Biomimikry', de: 'Kurze animierte Lektionen über Natur-Technik.', en: 'Short animated lessons on nature-inspired technology.', url: 'https://ed.ted.com/on/o57WihZH', badge: { de: '8 Min · alle Altersgruppen', en: '8 min · all ages' } },
-    { icon: '🌀', name: 'The LAUNCH Cycle', de: 'Design-Thinking Schritt-für-Schritt für Schüler.', en: 'Student-friendly human-centred design thinking.', url: 'https://ed.ted.com/on/LMpd22xR', badge: { de: '9+', en: '9+' } },
-    { icon: '🏗️', name: 'Michael Pawlyn — TED', de: 'Biomimikry trifft Architektur.', en: 'Biomimicry meets architecture — radical resource efficiency.', url: 'https://ted.com/talks/michael_pawlyn_using_nature_s_genius_in_architecture', badge: { de: '9+', en: '9+' } },
-    { icon: '📦', name: 'Rethinking Packaging', de: 'Masterclass über nachhaltiges Produktdesign.', en: 'Masterclass on sustainable product design.', url: 'https://youthtopia.education/courses/rethinking-and-redesigning-packaging', badge: { de: '13+', en: '13+' } },
-    { icon: '🎬', name: 'Pixar in a Box', de: 'Wie Pixar Mathe und Physik für Filme nutzt.', en: 'How Pixar uses maths and physics in storytelling.', url: 'https://khanacademy.org/computing/pixar', badge: { de: 'Alle Altersgruppen', en: 'All ages' } },
-  ],
-  literacy: [
-    { icon: '✍️', name: 'Pobble', de: 'Veröffentliche deine Geschichten für ein weltweites Publikum.', en: 'Publish your writing to a real global audience.', url: 'https://pobble.com', badge: { de: 'Alle Altersgruppen', en: 'All ages · free' } },
-    { icon: '📖', name: 'CommonLit', de: 'Echte Texte mit Diskussionsfragen — kritisches Denken üben.', en: 'Real texts with guided questions for critical thinking.', url: 'https://commonlit.org', badge: { de: '10–16 · kostenlos', en: '10–16 · free' } },
-    { icon: '📰', name: 'Newsela', de: 'Aktuelle Nachrichten auf deinem Leseniveau.', en: 'Current news articles at adjustable reading levels.', url: 'https://newsela.com', badge: { de: '9–16 · kostenlos', en: '9–16 · free' } },
-    { icon: '✒️', name: 'Nat. Centre for Writing', de: 'Kurse zu Poesie und Storytelling.', en: 'Self-paced courses on poetry and storytelling.', url: 'https://nationalcentreforwriting.org.uk', badge: { de: 'Alle Altersgruppen', en: 'All ages · free' } },
-    { icon: '💻', name: 'Code.org', de: 'Programmieren lernen — Login bei Jak.', en: 'Free coding courses — login via Jak.', url: 'https://code.org', badge: { de: 'Alle Altersgruppen', en: 'All ages · free' } },
-  ],
-  bali: [
-    { icon: '🐢', name: 'Turtle Conservation', de: 'Schildkrötenschutz — echte Herausforderung auf Bali.', en: 'Sea turtle conservation — a real ongoing challenge in Bali.', url: 'https://youthtopia.education/courses/turtle-conservation', badge: { de: 'Alle Altersgruppen', en: 'All ages · free' } },
-    { icon: '🌊', name: 'Ocean Plastic Pollution', de: '5-Sterne-Kurs über Plastik im Meer.', en: '5-star course on ocean plastic and what\'s being done.', url: 'https://youthtopia.education/courses/ocean-plastic-pollution', badge: { de: 'Alle Altersgruppen', en: 'All ages · free' } },
-    { icon: '🌳', name: 'Kembali Ke Hutan', de: 'Indonesischer Kurs über Rückkehr in den Wald.', en: 'Indonesian course about returning to the forest.', url: 'https://youthtopia.education/courses/kembali-ke-hutan', badge: { de: 'Alle Altersgruppen', en: 'All ages · free' } },
-    { icon: '🍃', name: 'Moringa & TREELOGY', de: 'Wie eine Pflanze mehrere Probleme löst.', en: 'How one plant solves multiple problems.', url: 'https://youthtopia.education/courses/moringa-treelogy', badge: { de: 'Alle Altersgruppen', en: 'All ages · free' } },
-    { icon: '🌎', name: 'Earth School', de: '30 Klima-Lektionen und Zertifikat.', en: 'Complete 30 climate lessons and earn a certificate.', url: 'https://ed.ted.com/earth-school', badge: { de: '11+ · Zertifikat', en: '11+ · certificate' } },
-    { icon: '🌀', name: 'Permaculture Masterclass', de: 'Systeme entwerfen, die mit der Natur arbeiten.', en: 'Design systems that work with nature — for Bali.', url: 'https://youthtopia.education/courses/permaculture-masterclass', badge: { de: 'Alle Altersgruppen', en: 'All ages · free' } },
-  ],
-  pro: [
-    { icon: '🏛️', name: 'Harvard Free Courses', de: 'Über 100 kostenlose Uni-Kurse zu fast jedem Thema.', en: '100+ free university courses on almost any topic.', url: 'https://pll.harvard.edu/catalog/free', badge: { de: '13+ · kostenlos', en: '13+ · free audit' } },
-    { icon: '🔬', name: 'MIT OpenCourseWare', de: 'Über 2.500 Uni-Kurse ohne Anmeldung.', en: '2,500+ university courses — no account needed.', url: 'https://ocw.mit.edu', badge: { de: '14+ · offen', en: '14+ · open access' } },
-    { icon: '💻', name: 'CS50 — Harvard', de: 'Informatik und Coding von Harvard.', en: 'Harvard\'s most popular course — coding & problem-solving.', url: 'https://pll.harvard.edu/course/cs50-introduction-computer-science', badge: { de: '13+ · Zertifikat', en: '13+ · free certificate' } },
-    { icon: '🎓', name: 'OpenLearn', de: 'Hunderte kostenlose Kurse mit digitalen Badges.', en: 'Hundreds of free short courses with digital badges.', url: 'https://open.edu/openlearn', badge: { de: '13+ · Badges', en: '13+ · free badges' } },
-  ],
-};
+        <div class="mt-8 p-4 bg-gray-50 rounded-2xl border border-gray-100">
+            <p id="tip-text" class="text-xs text-gray-500 leading-relaxed text-center">
+                💡 Kein Tool nötig — dip in, wenn etwas zu deinem Projekt passt.
+            </p>
+        </div>
+    </main>
 
-const CATEGORIES = [
-  { key: 'maths',      icon: '🧮', de: 'Mathe',               en: 'Maths',           color: '#F59E0B' },
-  { key: 'biomimicry', icon: '🌿', de: 'Biomimikry & Design', en: 'Biomimicry',       color: '#10B981' },
-  { key: 'literacy',   icon: '✍️', de: 'Lesen & Schreiben',   en: 'Literacy',         color: '#EF4444' },
-  { key: 'bali',       icon: '🐢', de: 'Bali & Impact',       en: 'Bali & Impact',    color: '#3B82F6' },
-  { key: 'pro',        icon: '🎓', de: 'Fortgeschrittene 14+', en: 'Pro 14+',          color: '#8B5CF6' },
-];
+    <div id="category-view" class="hidden fixed inset-0 bg-white z-50 overflow-y-auto">
+        <div id="cat-header" class="p-6 text-white">
+            <button id="back-btn" class="text-white/80 text-sm font-semibold mb-4">← Zurück</button>
+            <h2 id="cat-title" class="text-2xl font-bold"></h2>
+            <p id="cat-sub" class="text-xs opacity-80 mt-1"></p>
+        </div>
+        <div id="tool-list" class="p-5 space-y-3">
+            </div>
+    </div>
+</div>
 
-// ─── AI CALL ─────────────────────────────────────────────────────────────────
+<script>
+    // --- DATEN AUS DEINEM CODE ---
+    const TOOLS = {
+        maths: [
+            { icon: '🤖', name: 'School.AI', de: 'KI-Mathetutor mit Tipps, Erklärungen und Rechenwegen.', en: 'AI maths tutor with hints and worked examples.', url: 'https://schoolai.com', badge_de: 'Login bei Jak', badge_en: 'Login via Jak' },
+            { icon: '🚀', name: 'Seneca Learning', de: 'Adaptives Training — wird schwieriger, je besser du wirst.', en: 'Adaptive revision that gets harder as you improve.', url: 'https://senecalearning.com', badge_de: '11–16 · kostenlos', badge_en: '11–16 · free' },
+            { icon: '🎓', name: 'Khan Academy', de: 'Videos und Übungen für Mathe auf jedem Niveau.', en: 'Self-paced videos and exercises for all maths levels.', url: 'https://khanacademy.org/math', badge_de: 'Alle Altersgruppen', badge_en: 'All ages · free' },
+            { icon: '📝', name: 'White Rose Maths', de: 'Kostenlose Unterrichtsvideos und Arbeitsblätter.', en: 'Free lesson videos and structured worksheets.', url: 'https://whiteroseeducation.com', badge_de: 'Alle Altersgruppen', badge_en: 'All ages · free' },
+            { icon: '🎮', name: 'TT Rockstars & Prodigy', de: 'Einmaleins-Spiele — wirklich Spaß!', en: 'Times tables and number games — genuinely fun.', url: 'https://ttrockstars.com', badge_de: '9–14 · Login bei Jak', badge_en: '9–14 · Login via Jak' },
+            { icon: '📘', name: 'Good & Beautiful', de: 'Kostenlose ausdruckbare Mathe-Arbeitshefte.', en: 'Free printable maths workbooks for all levels.', url: 'https://goodandbeautiful.com', badge_de: 'Alle Altersgruppen', badge_en: 'All ages · free' }
+        ],
+        biomimicry: [
+            { icon: '🌿', name: 'AskNature.org', de: 'Suchmaschine für Natur-Lösungen — suche "wasserdicht".', en: 'Search nature\'s solutions — try "waterproof".', url: 'https://asknature.org', badge_de: 'Alle Altersgruppen', badge_en: 'All ages · explore' },
+            { icon: '💡', name: 'TED-Ed Biomimikry', de: 'Kurze animierte Lektionen über Natur-Technik.', en: 'Short animated lessons on nature-inspired technology.', url: 'https://ed.ted.com/on/o57WihZH', badge_de: '8 Min · alle Altersgruppen', badge_en: '8 min · all ages' },
+            { icon: '🌀', name: 'The LAUNCH Cycle', de: 'Design-Thinking Schritt-für-Schritt für Schüler.', en: 'Student-friendly human-centred design thinking.', url: 'https://ed.ted.com/on/LMpd22xR', badge_de: '9+', badge_en: '9+' },
+            { icon: '🏗️', name: 'Michael Pawlyn — TED', de: 'Biomimikry trifft Architektur.', en: 'Biomimicry meets architecture — radical resource efficiency.', url: 'https://ted.com/talks/michael_pawlyn_using_nature_s_genius_in_architecture', badge_de: '9+', badge_en: '9+' },
+            { icon: '📦', name: 'Rethinking Packaging', de: 'Masterclass über nachhaltiges Produktdesign.', en: 'Masterclass on sustainable product design.', url: 'https://youthtopia.education/courses/rethinking-and-redesigning-packaging', badge_de: '13+', badge_en: '13+' },
+            { icon: '🎬', name: 'Pixar in a Box', de: 'Wie Pixar Mathe und Physik für Filme nutzt.', en: 'How Pixar uses maths and physics in storytelling.', url: 'https://khanacademy.org/computing/pixar', badge_de: 'Alle Altersgruppen', badge_en: 'All ages' }
+        ],
+        literacy: [
+            { icon: '✍️', name: 'Pobble', de: 'Veröffentliche deine Geschichten für ein weltweites Publikum.', en: 'Publish your writing to a real global audience.', url: 'https://pobble.com', badge_de: 'Alle Altersgruppen', badge_en: 'All ages · free' },
+            { icon: '📖', name: 'CommonLit', de: 'Echte Texte mit Diskussionsfragen — kritisches Denken üben.', en: 'Real texts with guided questions for critical thinking.', url: 'https://commonlit.org', badge_de: '10–16 · kostenlos', badge_en: '10–16 · free' },
+            { icon: '📰', name: 'Newsela', de: 'Aktuelle Nachrichten auf deinem Leseniveau.', en: 'Current news articles at adjustable reading levels.', url: 'https://newsela.com', badge_de: '9–16 · kostenlos', badge_en: '9–16 · free' },
+            { icon: '✒️', name: 'Nat. Centre for Writing', de: 'Kurse zu Poesie und Storytelling.', en: 'Self-paced courses on poetry and storytelling.', url: 'https://nationalcentreforwriting.org.uk', badge_de: 'Alle Altersgruppen', badge_en: 'All ages · free' },
+            { icon: '💻', name: 'Code.org', de: 'Programmieren lernen — Login bei Jak.', en: 'Free coding courses — login via Jak.', url: 'https://code.org', badge_de: 'Alle Altersgruppen', badge_en: 'All ages · free' }
+        ],
+        bali: [
+            { icon: '🐢', name: 'Turtle Conservation', de: 'Schildkrötenschutz — echte Herausforderung auf Bali.', en: 'Sea turtle conservation — a real ongoing challenge in Bali.', url: 'https://youthtopia.education/courses/turtle-conservation', badge_de: 'Alle Altersgruppen', badge_en: 'All ages · free' },
+            { icon: '🌊', name: 'Ocean Plastic Pollution', de: '5-Sterne-Kurs über Plastik im Meer.', en: '5-star course on ocean plastic and what\'s being done.', url: 'https://youthtopia.education/courses/ocean-plastic-pollution', badge_de: 'Alle Altersgruppen', badge_en: 'All ages · free' },
+            { icon: '🌳', name: 'Kembali Ke Hutan', de: 'Indonesischer Kurs über Rückkehr in den Wald.', en: 'Indonesian course about returning to the forest.', url: 'https://youthtopia.education/courses/kembali-ke-hutan', badge_de: 'Alle Altersgruppen', badge_en: 'All ages · free' },
+            { icon: '🍃', name: 'Moringa & TREELOGY', de: 'Wie eine Pflanze mehrere Probleme löst.', en: 'How one plant solves multiple problems.', url: 'https://youthtopia.education/courses/moringa-treelogy', badge_de: 'Alle Altersgruppen', badge_en: 'All ages · free' },
+            { icon: '🌎', name: 'Earth School', de: '30 Klima-Lektionen und Zertifikat.', en: 'Complete 30 climate lessons and earn a certificate.', url: 'https://ed.ted.com/earth-school', badge_de: '11+ · Zertifikat', badge_en: '11+ · certificate' },
+            { icon: '🌀', name: 'Permaculture Masterclass', de: 'Systeme entwerfen, die mit der Natur arbeiten.', en: 'Design systems that work with nature — for Bali.', url: 'https://youthtopia.education/courses/permaculture-masterclass', badge_de: 'Alle Altersgruppen', badge_en: 'All ages · free' }
+        ],
+        pro: [
+            { icon: '🏛️', name: 'Harvard Free Courses', de: 'Über 100 kostenlose Uni-Kurse zu fast jedem Thema.', en: '100+ free university courses on almost any topic.', url: 'https://pll.harvard.edu/catalog/free', badge_de: '13+ · kostenlos', badge_en: '13+ · free audit' },
+            { icon: '🔬', name: 'MIT OpenCourseWare', de: 'Über 2.500 Uni-Kurse ohne Anmeldung.', en: '2,500+ university courses — no account needed.', url: 'https://ocw.mit.edu', badge_de: '14+ · offen', badge_en: '14+ · open access' },
+            { icon: '💻', name: 'CS50 — Harvard', de: 'Informatik und Coding von Harvard.', en: 'Harvard\'s most popular course — coding & problem-solving.', url: 'https://pll.harvard.edu/course/cs50-introduction-computer-science', badge_de: '13+ · Zertifikat', badge_en: '13+ · free certificate' },
+            { icon: '🎓', name: 'OpenLearn', de: 'Hunderte kostenlose Kurse mit digitalen Badges.', en: 'Hundreds of free short courses with digital badges.', url: 'https://open.edu/openlearn', badge_de: '13+ · Badges', badge_en: '13+ · free badges' }
+        ]
+    };
 
-async function callClaude(query) {
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': ANTHROPIC_API_KEY,
-      'anthropic-version': '2023-06-01',
-    },
-    body: JSON.stringify({
-      model: MODEL,
-      max_tokens: 400,
-      system: SYSTEM_PROMPT,
-      messages: [{ role: 'user', content: query }],
-    }),
-  });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error?.message || 'API error');
-  return data.content[0]?.text || '';
-}
+    const CATEGORIES = [
+        { key: 'maths', icon: '🧮', de: 'Mathe', en: 'Maths', color: '#F59E0B' },
+        { key: 'biomimicry', icon: '🌿', de: 'Biomimikry & Design', en: 'Biomimicry', color: '#10B981' },
+        { key: 'literacy', icon: '✍️', de: 'Lesen & Schreiben', en: 'Literacy', color: '#EF4444' },
+        { key: 'bali', icon: '🐢', de: 'Bali & Impact', en: 'Bali & Impact', color: '#3B82F6' },
+        { key: 'pro', icon: '🎓', de: 'Fortgeschrittene 14+', en: 'Pro 14+', color: '#8B5CF6' }
+    ];
 
-// ─── COMPONENTS ──────────────────────────────────────────────────────────────
+    let currentLang = 'de';
 
-function Header({ lang, onToggleLang }) {
-  return (
-    <View style={s.header}>
-      <View>
-        <Text style={s.headerTitle}>FHS KI-Navigator</Text>
-        <Text style={s.headerSub}>{lang === 'de' ? 'Dein Lern-Guide · Term 4' : 'Your learning guide · Term 4'}</Text>
-      </View>
-      <TouchableOpacity style={s.langToggle} onPress={onToggleLang}>
-        <Text style={s.langToggleText}>{lang === 'de' ? 'EN' : 'DE'}</Text>
-      </TouchableOpacity>
-    </View>
-  );
-}
+    // --- LOGIK ---
+    const grid = document.getElementById('categories-grid');
+    const langBtn = document.getElementById('lang-toggle');
 
-function AISearchBox({ lang }) {
-  const [query, setQuery] = useState('');
-  const [result, setResult] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-
-  const handleSearch = async () => {
-    const q = query.trim();
-    if (!q || loading) return;
-    setLoading(true);
-    setResult('');
-    setError('');
-    fadeAnim.setValue(0);
-    try {
-      const answer = await callClaude(q);
-      setResult(answer);
-      Animated.timing(fadeAnim, { toValue: 1, duration: 350, useNativeDriver: true }).start();
-    } catch (e) {
-      setError(lang === 'de'
-        ? '⚠️ Fehler beim Abrufen. Prüfe deinen API-Key.'
-        : '⚠️ Error fetching response. Check your API key.');
-    } finally {
-      setLoading(false);
+    function updateLanguage() {
+        document.getElementById('header-sub').innerText = currentLang === 'de' ? 'Dein Lern-Guide · Term 4' : 'Your learning guide · Term 4';
+        document.getElementById('search-label').innerText = currentLang === 'de' ? '🤖 KI-Suche' : '🤖 AI Search';
+        document.getElementById('search-input').placeholder = currentLang === 'de' ? 'z.B. „Ich brauche Hilfe in Mathe“...' : 'e.g. "I need help with maths"...';
+        document.getElementById('divider-text').innerText = currentLang === 'de' ? 'oder stöbern' : 'or browse';
+        document.getElementById('browse-label').innerText = currentLang === 'de' ? 'Nach Kategorie' : 'By category';
+        document.getElementById('tip-text').innerText = currentLang === 'de' ? '💡 Kein Tool nötig — dip in, wenn etwas zu deinem Projekt passt.' : '💡 No order required — dip in when something connects to your project.';
+        langBtn.innerText = currentLang === 'de' ? 'EN' : 'DE';
+        renderGrid();
     }
-  };
 
-  return (
-    <View style={s.searchBox}>
-      <Text style={s.searchLabel}>{lang === 'de' ? '🤖 KI-Suche' : '🤖 AI Search'}</Text>
-      <View style={s.searchRow}>
-        <TextInput
-          style={s.searchInput}
-          placeholder={lang === 'de' ? 'z.B. „Ich brauche Hilfe in Mathe"…' : 'e.g. "I need help with maths"…'}
-          placeholderTextColor="#AAA"
-          value={query}
-          onChangeText={setQuery}
-          onSubmitEditing={handleSearch}
-          returnKeyType="search"
-          editable={!loading}
-        />
-        <TouchableOpacity
-          style={[s.searchBtn, loading && s.searchBtnDisabled]}
-          onPress={handleSearch}
-          disabled={loading}
-          activeOpacity={0.7}
-        >
-          {loading
-            ? <ActivityIndicator color="#fff" size="small" />
-            : <Text style={s.searchBtnText}>↗</Text>}
-        </TouchableOpacity>
-      </View>
+    function renderGrid() {
+        grid.innerHTML = '';
+        CATEGORIES.forEach(cat => {
+            const btn = document.createElement('button');
+            btn.className = `category-card p-5 rounded-2xl text-white text-left shadow-sm`;
+            btn.style.backgroundColor = cat.color;
+            btn.innerHTML = `
+                <div class="text-3xl mb-3">${cat.icon}</div>
+                <div class="font-bold text-sm leading-tight">${currentLang === 'de' ? cat.de : cat.en}</div>
+            `;
+            btn.onclick = () => showCategory(cat);
+            grid.appendChild(btn);
+        });
+    }
 
-      {result !== '' && (
-        <Animated.View style={[s.resultBox, { opacity: fadeAnim }]}>
-          <Text style={s.resultText}>{result}</Text>
-        </Animated.View>
-      )}
+    function showCategory(cat) {
+        const view = document.getElementById('category-view');
+        const list = document.getElementById('tool-list');
+        document.getElementById('cat-header').style.backgroundColor = cat.color;
+        document.getElementById('cat-title').innerText = `${cat.icon} ${currentLang === 'de' ? cat.de : cat.en}`;
+        
+        const tools = TOOLS[cat.key] || [];
+        document.getElementById('cat-sub').innerText = currentLang === 'de' ? `${tools.length} Tools verfügbar` : `${tools.length} tools available`;
+        
+        list.innerHTML = '';
+        tools.forEach(tool => {
+            const card = document.createElement('div');
+            card.className = "bg-white p-4 rounded-2xl border border-gray-100 shadow-sm";
+            card.innerHTML = `
+                <div class="flex items-start gap-3 mb-3">
+                    <span class="text-3xl">${tool.icon}</span>
+                    <div>
+                        <h4 class="font-bold text-gray-800">${tool.name}</h4>
+                        <span class="inline-block bg-blue-50 text-blue-500 text-[10px] font-bold px-2 py-0.5 rounded mt-1">
+                            ${currentLang === 'de' ? tool.badge_de : tool.badge_en}
+                        </span>
+                    </div>
+                </div>
+                <p class="text-gray-500 text-xs mb-4 leading-relaxed">${currentLang === 'de' ? tool.de : tool.en}</p>
+                <a href="${tool.url}" target="_blank" class="block w-full bg-[#1A1A2E] text-white text-center py-2.5 rounded-xl text-sm font-bold">
+                    ${currentLang === 'de' ? 'Öffnen →' : 'Open →'}
+                </a>
+            `;
+            list.appendChild(card);
+        });
+        
+        view.classList.remove('hidden');
+    }
 
-      {error !== '' && (
-        <View style={s.errorBox}>
-          <Text style={s.errorText}>{error}</Text>
-        </View>
-      )}
-    </View>
-  );
-}
+    langBtn.onclick = () => {
+        currentLang = currentLang === 'de' ? 'en' : 'de';
+        updateLanguage();
+    };
 
-function ToolCard({ tool, lang }) {
-  return (
-    <View style={s.card}>
-      <View style={s.cardHeader}>
-        <Text style={s.cardIcon}>{tool.icon}</Text>
-        <View style={{ flex: 1 }}>
-          <Text style={s.cardName}>{tool.name}</Text>
-          <View style={s.badge}><Text style={s.badgeText}>{tool.badge[lang]}</Text></View>
-        </View>
-      </View>
-      <Text style={s.cardDesc}>{lang === 'de' ? tool.de : tool.en}</Text>
-      <TouchableOpacity style={s.openBtn} onPress={() => Linking.openURL(tool.url).catch(()=>{})} activeOpacity={0.7}>
-        <Text style={s.openBtnText}>{lang === 'de' ? 'Öffnen →' : 'Open →'}</Text>
-      </TouchableOpacity>
-    </View>
-  );
-}
+    document.getElementById('back-btn').onclick = () => {
+        document.getElementById('category-view').classList.add('hidden');
+    };
 
-function CategoryGrid({ lang, onSelect }) {
-  return (
-    <View style={s.grid}>
-      {CATEGORIES.map((cat) => (
-        <TouchableOpacity key={cat.key} style={[s.catButton, { backgroundColor: cat.color }]} onPress={() => onSelect(cat)} activeOpacity={0.85}>
-          <Text style={s.catIcon}>{cat.icon}</Text>
-          <Text style={s.catLabel}>{lang === 'de' ? cat.de : cat.en}</Text>
-        </TouchableOpacity>
-      ))}
-    </View>
-  );
-}
+    // KI Suche Dummy (für echte KI wird API Key benötigt)
+    document.getElementById('search-btn').onclick = () => {
+        const input = document.getElementById('search-input').value;
+        const resultBox = document.getElementById('ai-result');
+        if(!input) return;
+        
+        resultBox.classList.remove('hidden');
+        resultBox.innerText = currentLang === 'de' 
+            ? "⚠️ Hinweis: Um die KI-Suche zu aktivieren, muss ein API-Key im Code hinterlegt werden. Nutze solange die Kategorien unten!"
+            : "⚠️ Note: To activate AI search, an API key must be added to the code. Use the categories below for now!";
+    };
 
-function CategoryScreen({ category, lang, onBack }) {
-  const tools = TOOLS[category.key] || [];
-  return (
-    <View style={{ flex: 1 }}>
-      <View style={[s.catHeader, { backgroundColor: category.color }]}>
-        <TouchableOpacity onPress={onBack} style={s.backBtn}>
-          <Text style={s.backBtnText}>← {lang === 'de' ? 'Zurück' : 'Back'}</Text>
-        </TouchableOpacity>
-        <Text style={s.catHeaderTitle}>{category.icon}  {lang === 'de' ? category.de : category.en}</Text>
-        <Text style={s.catHeaderSub}>{tools.length} {lang === 'de' ? 'Tools verfügbar' : 'tools available'}</Text>
-      </View>
-      <ScrollView contentContainerStyle={s.toolList} showsVerticalScrollIndicator={false}>
-        {tools.map((tool, i) => <ToolCard key={i} tool={tool} lang={lang} />)}
-        <View style={{ height: 32 }} />
-      </ScrollView>
-    </View>
-  );
-}
+    updateLanguage();
+</script>
 
-// ─── ROOT ─────────────────────────────────────────────────────────────────────
-
-export default function App() {
-  const [lang, setLang] = useState('de');
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const toggleLang = () => setLang((l) => l === 'de' ? 'en' : 'de');
-
-  return (
-    <SafeAreaView style={s.safe}>
-      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-      <Header lang={lang} onToggleLang={toggleLang} />
-
-      {selectedCategory ? (
-        <CategoryScreen category={selectedCategory} lang={lang} onBack={() => setSelectedCategory(null)} />
-      ) : (
-        <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-          <ScrollView contentContainerStyle={s.home} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
-            <AISearchBox lang={lang} />
-            <View style={s.divider}>
-              <View style={s.dividerLine} />
-              <Text style={s.dividerText}>{lang === 'de' ? 'oder stöbern' : 'or browse'}</Text>
-              <View style={s.dividerLine} />
-            </View>
-            <Text style={s.browseLabel}>{lang === 'de' ? 'Nach Kategorie' : 'By category'}</Text>
-            <CategoryGrid lang={lang} onSelect={setSelectedCategory} />
-            <View style={s.tip}>
-              <Text style={s.tipText}>
-                {lang === 'de'
-                  ? '💡 Kein Tool nötig — dip in, wenn etwas zu deinem Projekt passt.'
-                  : '💡 No order required — dip in when something connects to your project.'}
-              </Text>
-            </View>
-            <View style={{ height: 40 }} />
-          </ScrollView>
-        </KeyboardAvoidingView>
-      )}
-    </SafeAreaView>
-  );
-}
-
-// ─── STYLES ──────────────────────────────────────────────────────────────────
-
-const s = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#fff' },
-  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: '#F0F0F0' },
-  headerTitle: { fontSize: 20, fontWeight: '700', color: '#1A1A2E', letterSpacing: -0.3 },
-  headerSub: { fontSize: 11, color: '#999', marginTop: 2 },
-  langToggle: { backgroundColor: '#1A1A2E', paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20 },
-  langToggleText: { color: '#fff', fontWeight: '700', fontSize: 13 },
-  home: { paddingHorizontal: 18, paddingTop: 20 },
-
-  // Search
-  searchBox: { marginBottom: 4 },
-  searchLabel: { fontSize: 13, fontWeight: '700', color: '#1A1A2E', marginBottom: 8 },
-  searchRow: { flexDirection: 'row', gap: 8 },
-  searchInput: { flex: 1, backgroundColor: '#F5F5F7', borderRadius: 14, paddingHorizontal: 16, paddingVertical: 12, fontSize: 14, color: '#1A1A2E', borderWidth: 1, borderColor: '#E8E8E8' },
-  searchBtn: { width: 46, height: 46, backgroundColor: '#1A1A2E', borderRadius: 14, alignItems: 'center', justifyContent: 'center' },
-  searchBtnDisabled: { backgroundColor: '#999' },
-  searchBtnText: { color: '#fff', fontSize: 20, fontWeight: '700' },
-  resultBox: { marginTop: 12, backgroundColor: '#F0F4FF', borderRadius: 14, padding: 14, borderWidth: 1, borderColor: '#D6E4FF' },
-  resultText: { fontSize: 14, color: '#1A1A2E', lineHeight: 22 },
-  errorBox: { marginTop: 10, backgroundColor: '#FFF0F0', borderRadius: 12, padding: 12, borderWidth: 1, borderColor: '#FFD6D6' },
-  errorText: { fontSize: 13, color: '#CC2222' },
-
-  // Divider
-  divider: { flexDirection: 'row', alignItems: 'center', marginVertical: 20, gap: 10 },
-  dividerLine: { flex: 1, height: 1, backgroundColor: '#EBEBEB' },
-  dividerText: { fontSize: 12, color: '#AAA', fontWeight: '600' },
-  browseLabel: { fontSize: 13, fontWeight: '700', color: '#1A1A2E', marginBottom: 12 },
-
-  // Grid
-  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
-  catButton: { width: '47.5%', borderRadius: 16, padding: 18 },
-  catIcon: { fontSize: 26, marginBottom: 8 },
-  catLabel: { color: '#fff', fontWeight: '700', fontSize: 13, lineHeight: 18 },
-
-  // Tip
-  tip: { marginTop: 18, backgroundColor: '#F8F9FA', borderRadius: 12, padding: 14 },
-  tipText: { fontSize: 13, color: '#555', lineHeight: 18 },
-
-  // Category screen
-  catHeader: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 20 },
-  backBtn: { marginBottom: 10 },
-  backBtnText: { color: 'rgba(255,255,255,0.85)', fontSize: 14, fontWeight: '600' },
-  catHeaderTitle: { fontSize: 22, fontWeight: '700', color: '#fff', letterSpacing: -0.3 },
-  catHeaderSub: { color: 'rgba(255,255,255,0.75)', fontSize: 12, marginTop: 4 },
-  toolList: { paddingHorizontal: 16, paddingTop: 14 },
-
-  // Cards
-  card: { backgroundColor: '#fff', borderRadius: 16, padding: 14, marginBottom: 10, borderWidth: 1, borderColor: '#EBEBEB', shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 4, elevation: 2 },
-  cardHeader: { flexDirection: 'row', alignItems: 'flex-start', gap: 10, marginBottom: 8 },
-  cardIcon: { fontSize: 26, lineHeight: 32 },
-  cardName: { fontSize: 15, fontWeight: '700', color: '#1A1A2E', marginBottom: 4 },
-  badge: { alignSelf: 'flex-start', backgroundColor: '#F0F4FF', borderRadius: 6, paddingHorizontal: 8, paddingVertical: 3 },
-  badgeText: { fontSize: 10, color: '#4A6CF7', fontWeight: '600' },
-  cardDesc: { fontSize: 13, color: '#555', lineHeight: 19, marginBottom: 12 },
-  openBtn: { backgroundColor: '#1A1A2E', borderRadius: 10, paddingVertical: 10, alignItems: 'center' },
-  openBtnText: { color: '#fff', fontWeight: '700', fontSize: 14 },
-});
+</body>
+</html>
