@@ -5,201 +5,245 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FHS KI-Navigator</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        .category-card { transition: all 0.2s; }
-        .category-card:active { transform: scale(0.95); }
+        .category-card { transition: transform 0.2s; cursor: pointer; border-radius: 2rem; }
+        .category-card:hover { transform: scale(1.02); }
+        .tool-card { transition: all 0.2s; border-radius: 1.25rem; border: 1px solid #e5e7eb; height: 100%; display: flex; flex-direction: column; justify-content: space-between; }
+        .tool-card:hover { border-color: #3b82f6; background-color: #f8fafc; transform: translateY(-2px); }
+        .hidden { display: none; }
+        .badge { font-size: 0.6rem; padding: 2px 10px; border-radius: 9999px; font-weight: 800; text-transform: uppercase; }
     </style>
 </head>
-<body class="bg-white text-[#1A1A2E]">
+<body class="bg-white font-sans text-gray-900">
 
-<div id="app" class="max-w-md mx-auto min-h-screen flex flex-col">
-    <header class="flex justify-between items-center px-5 py-4 border-b border-gray-100">
+    <header class="p-6 max-w-5xl mx-auto flex justify-between items-center">
         <div>
-            <h1 class="text-xl font-bold tracking-tight">FHS KI-Navigator</h1>
-            <p id="header-sub" class="text-[11px] text-gray-400 mt-0.5">Dein Lern-Guide · Term 4</p>
+            <h1 class="text-3xl font-black tracking-tight">FHS KI-Navigator</h1>
+            <p id="header-subtitle" class="text-sm text-gray-500 font-medium">Lern-Ressourcen Guide • Term 4</p>
         </div>
-        <button id="lang-toggle" class="bg-[#1A1A2E] text-white px-4 py-1.5 rounded-full text-xs font-bold">EN</button>
+        <div class="flex gap-2">
+            <button onclick="setLanguage('de')" id="btn-de" class="px-4 py-2 rounded-full text-xs font-bold border-2 transition-all">DE</button>
+            <button onclick="setLanguage('en')" id="btn-en" class="px-4 py-2 rounded-full text-xs font-bold border-2 transition-all">EN</button>
+        </div>
     </header>
 
-    <main id="main-content" class="flex-1 px-5 pt-5 pb-10">
-        <section class="mb-6">
-            <h3 id="search-label" class="text-xs font-bold mb-2 uppercase tracking-wider text-gray-500">🤖 KI-Suche</h3>
-            <div class="flex gap-2">
-                <input id="search-input" type="text" class="flex-1 bg-gray-100 border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-blue-400" placeholder="z.B. „Ich brauche Hilfe in Mathe“...">
-                <button id="search-btn" class="bg-[#1A1A2E] text-white w-12 h-12 rounded-xl flex items-center justify-center font-bold text-xl">↗</button>
+    <main class="max-w-5xl mx-auto p-6">
+        
+        <section id="search-section" class="mb-12">
+            <div class="flex gap-3">
+                <input type="text" id="search-input" class="flex-1 p-5 rounded-2xl bg-gray-100 border-none focus:ring-2 focus:ring-blue-500 outline-none font-medium">
+                <button id="search-btn" class="bg-gray-900 text-white px-8 rounded-2xl shadow-lg font-bold hover:bg-black transition-colors uppercase tracking-widest text-sm">Suchen</button>
             </div>
-            <div id="ai-result" class="hidden mt-3 p-4 bg-blue-50 border border-blue-100 rounded-xl text-sm leading-relaxed text-[#1A1A2E]"></div>
         </section>
 
-        <div class="flex items-center gap-3 my-6">
-            <div class="flex-1 h-[1px] bg-gray-100"></div>
-            <span id="divider-text" class="text-[11px] font-semibold text-gray-300 uppercase">oder stöbern</span>
-            <div class="flex-1 h-[1px] bg-gray-100"></div>
-        </div>
+        <section id="main-view">
+            <h2 id="section-label" class="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-6">Hauptbereiche</h2>
+            <div id="category-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                </div>
+        </section>
 
-        <h3 id="browse-label" class="text-xs font-bold mb-3 uppercase tracking-wider text-gray-500">Nach Kategorie</h3>
-        <div id="categories-grid" class="grid grid-cols-2 gap-3">
-            </div>
-
-        <div class="mt-8 p-4 bg-gray-50 rounded-2xl border border-gray-100">
-            <p id="tip-text" class="text-xs text-gray-500 leading-relaxed text-center">
-                💡 Kein Tool nötig — dip in, wenn etwas zu deinem Projekt passt.
-            </p>
-        </div>
+        <section id="category-view" class="hidden">
+            <button onclick="goBack()" id="back-button" class="mb-8 flex items-center text-gray-400 font-black hover:text-black transition-colors uppercase text-sm tracking-widest">
+                ← Zurück
+            </button>
+            <h2 id="category-title" class="text-4xl font-black mb-10 tracking-tight"></h2>
+            <div id="sub-categories-container"></div>
+        </section>
     </main>
 
-    <div id="category-view" class="hidden fixed inset-0 bg-white z-50 overflow-y-auto">
-        <div id="cat-header" class="p-6 text-white">
-            <button id="back-btn" class="text-white/80 text-sm font-semibold mb-4">← Zurück</button>
-            <h2 id="cat-title" class="text-2xl font-bold"></h2>
-            <p id="cat-sub" class="text-xs opacity-80 mt-1"></p>
-        </div>
-        <div id="tool-list" class="p-5 space-y-3">
-            </div>
-    </div>
-</div>
+    <script>
+        let currentLang = 'de';
 
-<script>
-    // --- DATEN AUS DEINEM CODE ---
-    const TOOLS = {
-        maths: [
-            { icon: '🤖', name: 'School.AI', de: 'KI-Mathetutor mit Tipps, Erklärungen und Rechenwegen.', en: 'AI maths tutor with hints and worked examples.', url: 'https://schoolai.com', badge_de: 'Login bei Jak', badge_en: 'Login via Jak' },
-            { icon: '🚀', name: 'Seneca Learning', de: 'Adaptives Training — wird schwieriger, je besser du wirst.', en: 'Adaptive revision that gets harder as you improve.', url: 'https://senecalearning.com', badge_de: '11–16 · kostenlos', badge_en: '11–16 · free' },
-            { icon: '🎓', name: 'Khan Academy', de: 'Videos und Übungen für Mathe auf jedem Niveau.', en: 'Self-paced videos and exercises for all maths levels.', url: 'https://khanacademy.org/math', badge_de: 'Alle Altersgruppen', badge_en: 'All ages · free' },
-            { icon: '📝', name: 'White Rose Maths', de: 'Kostenlose Unterrichtsvideos und Arbeitsblätter.', en: 'Free lesson videos and structured worksheets.', url: 'https://whiteroseeducation.com', badge_de: 'Alle Altersgruppen', badge_en: 'All ages · free' },
-            { icon: '🎮', name: 'TT Rockstars & Prodigy', de: 'Einmaleins-Spiele — wirklich Spaß!', en: 'Times tables and number games — genuinely fun.', url: 'https://ttrockstars.com', badge_de: '9–14 · Login bei Jak', badge_en: '9–14 · Login via Jak' },
-            { icon: '📘', name: 'Good & Beautiful', de: 'Kostenlose ausdruckbare Mathe-Arbeitshefte.', en: 'Free printable maths workbooks for all levels.', url: 'https://goodandbeautiful.com', badge_de: 'Alle Altersgruppen', badge_en: 'All ages · free' }
-        ],
-        biomimicry: [
-            { icon: '🌿', name: 'AskNature.org', de: 'Suchmaschine für Natur-Lösungen — suche "wasserdicht".', en: 'Search nature\'s solutions — try "waterproof".', url: 'https://asknature.org', badge_de: 'Alle Altersgruppen', badge_en: 'All ages · explore' },
-            { icon: '💡', name: 'TED-Ed Biomimikry', de: 'Kurze animierte Lektionen über Natur-Technik.', en: 'Short animated lessons on nature-inspired technology.', url: 'https://ed.ted.com/on/o57WihZH', badge_de: '8 Min · alle Altersgruppen', badge_en: '8 min · all ages' },
-            { icon: '🌀', name: 'The LAUNCH Cycle', de: 'Design-Thinking Schritt-für-Schritt für Schüler.', en: 'Student-friendly human-centred design thinking.', url: 'https://ed.ted.com/on/LMpd22xR', badge_de: '9+', badge_en: '9+' },
-            { icon: '🏗️', name: 'Michael Pawlyn — TED', de: 'Biomimikry trifft Architektur.', en: 'Biomimicry meets architecture — radical resource efficiency.', url: 'https://ted.com/talks/michael_pawlyn_using_nature_s_genius_in_architecture', badge_de: '9+', badge_en: '9+' },
-            { icon: '📦', name: 'Rethinking Packaging', de: 'Masterclass über nachhaltiges Produktdesign.', en: 'Masterclass on sustainable product design.', url: 'https://youthtopia.education/courses/rethinking-and-redesigning-packaging', badge_de: '13+', badge_en: '13+' },
-            { icon: '🎬', name: 'Pixar in a Box', de: 'Wie Pixar Mathe und Physik für Filme nutzt.', en: 'How Pixar uses maths and physics in storytelling.', url: 'https://khanacademy.org/computing/pixar', badge_de: 'Alle Altersgruppen', badge_en: 'All ages' }
-        ],
-        literacy: [
-            { icon: '✍️', name: 'Pobble', de: 'Veröffentliche deine Geschichten für ein weltweites Publikum.', en: 'Publish your writing to a real global audience.', url: 'https://pobble.com', badge_de: 'Alle Altersgruppen', badge_en: 'All ages · free' },
-            { icon: '📖', name: 'CommonLit', de: 'Echte Texte mit Diskussionsfragen — kritisches Denken üben.', en: 'Real texts with guided questions for critical thinking.', url: 'https://commonlit.org', badge_de: '10–16 · kostenlos', badge_en: '10–16 · free' },
-            { icon: '📰', name: 'Newsela', de: 'Aktuelle Nachrichten auf deinem Leseniveau.', en: 'Current news articles at adjustable reading levels.', url: 'https://newsela.com', badge_de: '9–16 · kostenlos', badge_en: '9–16 · free' },
-            { icon: '✒️', name: 'Nat. Centre for Writing', de: 'Kurse zu Poesie und Storytelling.', en: 'Self-paced courses on poetry and storytelling.', url: 'https://nationalcentreforwriting.org.uk', badge_de: 'Alle Altersgruppen', badge_en: 'All ages · free' },
-            { icon: '💻', name: 'Code.org', de: 'Programmieren lernen — Login bei Jak.', en: 'Free coding courses — login via Jak.', url: 'https://code.org', badge_de: 'Alle Altersgruppen', badge_en: 'All ages · free' }
-        ],
-        bali: [
-            { icon: '🐢', name: 'Turtle Conservation', de: 'Schildkrötenschutz — echte Herausforderung auf Bali.', en: 'Sea turtle conservation — a real ongoing challenge in Bali.', url: 'https://youthtopia.education/courses/turtle-conservation', badge_de: 'Alle Altersgruppen', badge_en: 'All ages · free' },
-            { icon: '🌊', name: 'Ocean Plastic Pollution', de: '5-Sterne-Kurs über Plastik im Meer.', en: '5-star course on ocean plastic and what\'s being done.', url: 'https://youthtopia.education/courses/ocean-plastic-pollution', badge_de: 'Alle Altersgruppen', badge_en: 'All ages · free' },
-            { icon: '🌳', name: 'Kembali Ke Hutan', de: 'Indonesischer Kurs über Rückkehr in den Wald.', en: 'Indonesian course about returning to the forest.', url: 'https://youthtopia.education/courses/kembali-ke-hutan', badge_de: 'Alle Altersgruppen', badge_en: 'All ages · free' },
-            { icon: '🍃', name: 'Moringa & TREELOGY', de: 'Wie eine Pflanze mehrere Probleme löst.', en: 'How one plant solves multiple problems.', url: 'https://youthtopia.education/courses/moringa-treelogy', badge_de: 'Alle Altersgruppen', badge_en: 'All ages · free' },
-            { icon: '🌎', name: 'Earth School', de: '30 Klima-Lektionen und Zertifikat.', en: 'Complete 30 climate lessons and earn a certificate.', url: 'https://ed.ted.com/earth-school', badge_de: '11+ · Zertifikat', badge_en: '11+ · certificate' },
-            { icon: '🌀', name: 'Permaculture Masterclass', de: 'Systeme entwerfen, die mit der Natur arbeiten.', en: 'Design systems that work with nature — for Bali.', url: 'https://youthtopia.education/courses/permaculture-masterclass', badge_de: 'Alle Altersgruppen', badge_en: 'All ages · free' }
-        ],
-        pro: [
-            { icon: '🏛️', name: 'Harvard Free Courses', de: 'Über 100 kostenlose Uni-Kurse zu fast jedem Thema.', en: '100+ free university courses on almost any topic.', url: 'https://pll.harvard.edu/catalog/free', badge_de: '13+ · kostenlos', badge_en: '13+ · free audit' },
-            { icon: '🔬', name: 'MIT OpenCourseWare', de: 'Über 2.500 Uni-Kurse ohne Anmeldung.', en: '2,500+ university courses — no account needed.', url: 'https://ocw.mit.edu', badge_de: '14+ · offen', badge_en: '14+ · open access' },
-            { icon: '💻', name: 'CS50 — Harvard', de: 'Informatik und Coding von Harvard.', en: 'Harvard\'s most popular course — coding & problem-solving.', url: 'https://pll.harvard.edu/course/cs50-introduction-computer-science', badge_de: '13+ · Zertifikat', badge_en: '13+ · free certificate' },
-            { icon: '🎓', name: 'OpenLearn', de: 'Hunderte kostenlose Kurse mit digitalen Badges.', en: 'Hundreds of free short courses with digital badges.', url: 'https://open.edu/openlearn', badge_de: '13+ · Badges', badge_en: '13+ · free badges' }
-        ]
-    };
+        const uiTexts = {
+            de: {
+                subtitle: "Lern-Ressourcen Guide • Term 4",
+                searchPlaceholder: "Was möchtest du heute lernen?",
+                searchBtn: "Suchen",
+                sectionLabel: "Hauptbereiche",
+                backBtn: "← Zurück zur Übersicht",
+                ageLabel: "9–16 Jahre"
+            },
+            en: {
+                subtitle: "Learning Resources Guide • Term 4",
+                searchPlaceholder: "What do you want to learn today?",
+                searchBtn: "Search",
+                sectionLabel: "Main Categories",
+                backBtn: "← Back to Overview",
+                ageLabel: "9–16 Years"
+            }
+        };
 
-    const CATEGORIES = [
-        { key: 'maths', icon: '🧮', de: 'Mathe', en: 'Maths', color: '#F59E0B' },
-        { key: 'biomimicry', icon: '🌿', de: 'Biomimikry & Design', en: 'Biomimicry', color: '#10B981' },
-        { key: 'literacy', icon: '✍️', de: 'Lesen & Schreiben', en: 'Literacy', color: '#EF4444' },
-        { key: 'bali', icon: '🐢', de: 'Bali & Impact', en: 'Bali & Impact', color: '#3B82F6' },
-        { key: 'pro', icon: '🎓', de: 'Fortgeschrittene 14+', en: 'Pro 14+', color: '#8B5CF6' }
-    ];
+        const data = {
+            "01": {
+                color: "#f9a01b", icon: "🧮",
+                de: { title: "Grundlagen", desc: "Mathe & Sprache" },
+                en: { title: "Foundations", desc: "Math & Language" },
+                subs: [
+                    { 
+                        de: "Mathe Werkzeuge", en: "Math Tools",
+                        items: [
+                            { t: "Seneca Learning", d: { de: "Adaptives Training (11-16J)", en: "Adaptive Learning (11-16y)" }, l: "https://senecalearning.com", b: "Interaktiv" },
+                            { t: "Khan Academy", d: { de: "Arithmetik bis Algebra", en: "Arithmetic to Algebra" }, l: "https://khanacademy.org/math", b: "Free" }
+                        ]
+                    },
+                    { 
+                        de: "Lesen & Schreiben", en: "Literacy",
+                        items: [
+                            { t: "Pobble", d: { de: "Kreatives Schreiben", en: "Creative Writing" }, l: "https://pobble.com", b: "Writing" },
+                            { t: "CommonLit", d: { de: "Texte & Analyse", en: "Reading & Analysis" }, l: "https://commonlit.org", b: "Reading" }
+                        ]
+                    }
+                ]
+            },
+            "02": {
+                color: "#00b289", icon: "🌿",
+                de: { title: "Biomimikry", desc: "Design Thinking" },
+                en: { title: "Biomimicry", desc: "Design Thinking" },
+                subs: [
+                    { 
+                        de: "Von der Natur lernen", en: "Learning from Nature",
+                        items: [
+                            { t: "AskNature.org", d: { de: "Bio-Datenbank", en: "Biological Database" }, l: "https://asknature.org", b: "Research" },
+                            { t: "Youthtopia", d: { de: "Permakultur-Masterclass", en: "Permaculture Masterclass" }, l: "https://youthtopia.education", b: "Youthtopia" }
+                        ]
+                    }
+                ]
+            },
+            "03": {
+                color: "#ef4444", icon: "🌍",
+                de: { title: "Bali & Impact", desc: "Nachhaltigkeit & SDGs" },
+                en: { title: "Bali & Impact", desc: "Sustainability & SDGs" },
+                subs: [
+                    { 
+                        de: "Global & Lokal", en: "Global & Local",
+                        items: [
+                            { t: "Earth School", d: { de: "Klimakurs (Zertifikat)", en: "Climate Course (Certificate)" }, l: "https://ed.ted.com/earth-school", b: "TED-Ed" },
+                            { t: "CTC Online", d: { de: "Bali Meeresökologie", en: "Bali Marine Ecology" }, l: "https://bit.ly/cdsonlinectc", b: "Zertifikat" }
+                        ]
+                    }
+                ]
+            },
+            "04": {
+                color: "#3b82f6", icon: "🐢",
+                de: { title: "Science & Tech", desc: "Physik & Coding" },
+                en: { title: "Science & Tech", desc: "Physics & Coding" },
+                subs: [
+                    { 
+                        de: "Science", en: "Science",
+                        items: [
+                            { t: "Khan Academy Physics", d: { de: "Mittelstufe Physik", en: "Middle School Physics" }, l: "https://khanacademy.org/science/ms-physics", b: "Science" },
+                            { t: "CS50 Harvard", d: { de: "Informatik Einführung", en: "CS Introduction" }, l: "https://pll.harvard.edu/course/cs50", b: "Harvard" }
+                        ]
+                    }
+                ]
+            },
+            "05": {
+                color: "#8b5cf6", icon: "🎤",
+                de: { title: "Storytelling", desc: "Präsentieren" },
+                en: { title: "Storytelling", desc: "Public Speaking" },
+                subs: [
+                    { 
+                        de: "Kommunikation", en: "Communication",
+                        items: [
+                            { t: "Public Speaking 101", d: { de: "TED-Ed Kurs", en: "TED-Ed Course" }, l: "https://ed.ted.com", b: "Speaking" },
+                            { t: "Melati Wijsen", d: { de: "1-on-1 Masterclass", en: "1-on-1 Masterclass" }, l: "https://youthtopia.education", b: "Expert" }
+                        ]
+                    }
+                ]
+            },
+            "06": {
+                color: "#22d3ee", icon: "💡",
+                de: { title: "PEP Support", desc: "Uni-Akademie" },
+                en: { title: "PEP Support", desc: "University Academy" },
+                subs: [
+                    { 
+                        de: "Prozess & Akademie", en: "Process & Academy",
+                        items: [
+                            { t: "Impact Guide", d: { de: "Projekt-Unterstützung", en: "Project Support" }, l: "https://youthtopia.education", b: "PEP" },
+                            { t: "Harvard/MIT/OpenLearn", d: { de: "Uni-Kurse (14+)", en: "Uni Courses (14+)" }, l: "#", b: "University" }
+                        ]
+                    }
+                ]
+            }
+        };
 
-    let currentLang = 'de';
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.getElementById('header-subtitle').innerText = uiTexts[lang].subtitle;
+            document.getElementById('search-input').placeholder = uiTexts[lang].searchPlaceholder;
+            document.getElementById('search-btn').innerText = uiTexts[lang].searchBtn;
+            document.getElementById('section-label').innerText = uiTexts[lang].sectionLabel;
+            document.getElementById('back-button').innerText = uiTexts[lang].backBtn;
+            
+            // Button Styles
+            document.getElementById('btn-de').className = lang === 'de' ? 'px-4 py-2 rounded-full text-xs font-bold border-2 bg-black text-white border-black' : 'px-4 py-2 rounded-full text-xs font-bold border-2 border-gray-200';
+            document.getElementById('btn-en').className = lang === 'en' ? 'px-4 py-2 rounded-full text-xs font-bold border-2 bg-black text-white border-black' : 'px-4 py-2 rounded-full text-xs font-bold border-2 border-gray-200';
+            
+            renderMainGrid();
+        }
 
-    // --- LOGIK ---
-    const grid = document.getElementById('categories-grid');
-    const langBtn = document.getElementById('lang-toggle');
-
-    function updateLanguage() {
-        document.getElementById('header-sub').innerText = currentLang === 'de' ? 'Dein Lern-Guide · Term 4' : 'Your learning guide · Term 4';
-        document.getElementById('search-label').innerText = currentLang === 'de' ? '🤖 KI-Suche' : '🤖 AI Search';
-        document.getElementById('search-input').placeholder = currentLang === 'de' ? 'z.B. „Ich brauche Hilfe in Mathe“...' : 'e.g. "I need help with maths"...';
-        document.getElementById('divider-text').innerText = currentLang === 'de' ? 'oder stöbern' : 'or browse';
-        document.getElementById('browse-label').innerText = currentLang === 'de' ? 'Nach Kategorie' : 'By category';
-        document.getElementById('tip-text').innerText = currentLang === 'de' ? '💡 Kein Tool nötig — dip in, wenn etwas zu deinem Projekt passt.' : '💡 No order required — dip in when something connects to your project.';
-        langBtn.innerText = currentLang === 'de' ? 'EN' : 'DE';
-        renderGrid();
-    }
-
-    function renderGrid() {
-        grid.innerHTML = '';
-        CATEGORIES.forEach(cat => {
-            const btn = document.createElement('button');
-            btn.className = `category-card p-5 rounded-2xl text-white text-left shadow-sm`;
-            btn.style.backgroundColor = cat.color;
-            btn.innerHTML = `
-                <div class="text-3xl mb-3">${cat.icon}</div>
-                <div class="font-bold text-sm leading-tight">${currentLang === 'de' ? cat.de : cat.en}</div>
-            `;
-            btn.onclick = () => showCategory(cat);
-            grid.appendChild(btn);
-        });
-    }
-
-    function showCategory(cat) {
-        const view = document.getElementById('category-view');
-        const list = document.getElementById('tool-list');
-        document.getElementById('cat-header').style.backgroundColor = cat.color;
-        document.getElementById('cat-title').innerText = `${cat.icon} ${currentLang === 'de' ? cat.de : cat.en}`;
-        
-        const tools = TOOLS[cat.key] || [];
-        document.getElementById('cat-sub').innerText = currentLang === 'de' ? `${tools.length} Tools verfügbar` : `${tools.length} tools available`;
-        
-        list.innerHTML = '';
-        tools.forEach(tool => {
-            const card = document.createElement('div');
-            card.className = "bg-white p-4 rounded-2xl border border-gray-100 shadow-sm";
-            card.innerHTML = `
-                <div class="flex items-start gap-3 mb-3">
-                    <span class="text-3xl">${tool.icon}</span>
-                    <div>
-                        <h4 class="font-bold text-gray-800">${tool.name}</h4>
-                        <span class="inline-block bg-blue-50 text-blue-500 text-[10px] font-bold px-2 py-0.5 rounded mt-1">
-                            ${currentLang === 'de' ? tool.badge_de : tool.badge_en}
-                        </span>
+        function renderMainGrid() {
+            const grid = document.getElementById('category-grid');
+            grid.innerHTML = '';
+            for (const [id, content] of Object.entries(data)) {
+                grid.innerHTML += `
+                    <div onclick="showCategory('${id}')" class="category-card p-8 text-white" style="background-color: ${content.color}">
+                        <div class="text-4xl mb-6">${id}</div>
+                        <h3 class="text-2xl font-black leading-tight">${content[currentLang].title}<br>${content[currentLang].desc}</h3>
+                        <p class="text-sm opacity-90 mt-4 font-medium italic underline">${content.icon} Info</p>
                     </div>
-                </div>
-                <p class="text-gray-500 text-xs mb-4 leading-relaxed">${currentLang === 'de' ? tool.de : tool.en}</p>
-                <a href="${tool.url}" target="_blank" class="block w-full bg-[#1A1A2E] text-white text-center py-2.5 rounded-xl text-sm font-bold">
-                    ${currentLang === 'de' ? 'Öffnen →' : 'Open →'}
-                </a>
-            `;
-            list.appendChild(card);
-        });
-        
-        view.classList.remove('hidden');
-    }
+                `;
+            }
+        }
 
-    langBtn.onclick = () => {
-        currentLang = currentLang === 'de' ? 'en' : 'de';
-        updateLanguage();
-    };
+        function showCategory(id) {
+            const cat = data[id];
+            document.getElementById('category-title').innerText = `${id} ${cat[currentLang].title}`;
+            const container = document.getElementById('sub-categories-container');
+            container.innerHTML = '';
+            
+            cat.subs.forEach(sub => {
+                const subSection = document.createElement('div');
+                subSection.className = "mb-12";
+                subSection.innerHTML = `<h3 class="text-xs font-black text-gray-400 uppercase tracking-[0.3em] mb-6 border-l-4 border-gray-200 pl-4">${sub[currentLang]}</h3>`;
+                
+                const grid = document.createElement('div');
+                grid.className = "grid grid-cols-1 md:grid-cols-2 gap-4";
+                
+                sub.items.forEach(item => {
+                    grid.innerHTML += `
+                        <a href="${item.l}" target="_blank" class="tool-card p-6 bg-white group">
+                            <div>
+                                <div class="flex justify-between items-start mb-3">
+                                    <h4 class="font-bold text-xl leading-tight group-hover:text-blue-600 transition-colors">${item.t}</h4>
+                                    <span class="badge bg-gray-100 text-gray-500">${item.b}</span>
+                                </div>
+                                <p class="text-gray-500 text-sm font-medium leading-relaxed">${item.d[currentLang]}</p>
+                            </div>
+                            <div class="mt-6 flex items-center text-xs font-black text-blue-600 opacity-0 group-hover:opacity-100 transition-all transform translate-x-[-10px] group-hover:translate-x-0">
+                                ${currentLang === 'de' ? 'JETZT LERNEN' : 'LEARN NOW'} →
+                            </div>
+                        </a>
+                    `;
+                });
+                subSection.appendChild(grid);
+                container.appendChild(subSection);
+            });
 
-    document.getElementById('back-btn').onclick = () => {
-        document.getElementById('category-view').classList.add('hidden');
-    };
+            document.getElementById('main-view').classList.add('hidden');
+            document.getElementById('search-section').classList.add('hidden');
+            document.getElementById('category-view').classList.remove('hidden');
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
 
-    // KI Suche Dummy (für echte KI wird API Key benötigt)
-    document.getElementById('search-btn').onclick = () => {
-        const input = document.getElementById('search-input').value;
-        const resultBox = document.getElementById('ai-result');
-        if(!input) return;
-        
-        resultBox.classList.remove('hidden');
-        resultBox.innerText = currentLang === 'de' 
-            ? "⚠️ Hinweis: Um die KI-Suche zu aktivieren, muss ein API-Key im Code hinterlegt werden. Nutze solange die Kategorien unten!"
-            : "⚠️ Note: To activate AI search, an API key must be added to the code. Use the categories below for now!";
-    };
+        function goBack() {
+            document.getElementById('category-view').classList.add('hidden');
+            document.getElementById('main-view').classList.remove('hidden');
+            document.getElementById('search-section').classList.remove('hidden');
+        }
 
-    updateLanguage();
-</script>
-
+        // Init
+        setLanguage('de');
+    </script>
 </body>
 </html>
