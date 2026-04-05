@@ -19,7 +19,7 @@
     <header class="p-6 max-w-5xl mx-auto flex justify-between items-center">
         <div>
             <h1 class="text-3xl font-black tracking-tight">FHS KI-Navigator</h1>
-            <p id="header-subtitle" class="text-sm text-gray-500 font-medium">Lern-Ressourcen Guide • Term 4</p>
+            <p id="header-subtitle" class="text-sm text-gray-500 font-medium italic">Lern-Ressourcen Guide • Term 4</p>
         </div>
         <div class="flex gap-2">
             <button onclick="setLanguage('de')" id="btn-de" class="px-4 py-2 rounded-full text-xs font-bold border-2 transition-all">DE</button>
@@ -28,24 +28,20 @@
     </header>
 
     <main class="max-w-5xl mx-auto p-6">
-        
         <section id="search-section" class="mb-12">
             <div class="flex gap-3">
-                <input type="text" id="search-input" class="flex-1 p-5 rounded-2xl bg-gray-100 border-none focus:ring-2 focus:ring-blue-500 outline-none font-medium">
+                <input type="text" id="search-input" class="flex-1 p-5 rounded-2xl bg-gray-100 border-none focus:ring-2 focus:ring-blue-500 outline-none font-medium italic">
                 <button id="search-btn" class="bg-gray-900 text-white px-8 rounded-2xl shadow-lg font-bold hover:bg-black transition-colors uppercase tracking-widest text-sm">Suchen</button>
             </div>
         </section>
 
         <section id="main-view">
             <h2 id="section-label" class="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-6">Hauptbereiche</h2>
-            <div id="category-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                </div>
+            <div id="category-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         </section>
 
         <section id="category-view" class="hidden">
-            <button onclick="goBack()" id="back-button" class="mb-8 flex items-center text-gray-400 font-black hover:text-black transition-colors uppercase text-sm tracking-widest">
-                ← Zurück
-            </button>
+            <button onclick="goBack()" id="back-button" class="mb-8 flex items-center text-gray-400 font-black hover:text-black transition-colors uppercase text-sm tracking-widest">← Zurück</button>
             <h2 id="category-title" class="text-4xl font-black mb-10 tracking-tight"></h2>
             <div id="sub-categories-container"></div>
         </section>
@@ -55,22 +51,8 @@
         let currentLang = 'de';
 
         const uiTexts = {
-            de: {
-                subtitle: "Lern-Ressourcen Guide • Term 4",
-                searchPlaceholder: "Was möchtest du heute lernen?",
-                searchBtn: "Suchen",
-                sectionLabel: "Hauptbereiche",
-                backBtn: "← Zurück zur Übersicht",
-                ageLabel: "9–16 Jahre"
-            },
-            en: {
-                subtitle: "Learning Resources Guide • Term 4",
-                searchPlaceholder: "What do you want to learn today?",
-                searchBtn: "Search",
-                sectionLabel: "Main Categories",
-                backBtn: "← Back to Overview",
-                ageLabel: "9–16 Years"
-            }
+            de: { subtitle: "Lern-Ressourcen Guide • Term 4", searchPlaceholder: "Was möchtest du heute lernen?", searchBtn: "Suchen", sectionLabel: "Hauptbereiche", backBtn: "← Zurück zur Übersicht" },
+            en: { subtitle: "Learning Resources Guide • Term 4", searchPlaceholder: "What do you want to learn today?", searchBtn: "Search", sectionLabel: "Main Categories", backBtn: "← Back to Overview" }
         };
 
         const data = {
@@ -82,15 +64,18 @@
                     { 
                         de: "Mathe Werkzeuge", en: "Math Tools",
                         items: [
-                            { t: "Seneca Learning", d: { de: "Adaptives Training (11-16J)", en: "Adaptive Learning (11-16y)" }, l: "https://senecalearning.com", b: "Interaktiv" },
-                            { t: "Khan Academy", d: { de: "Arithmetik bis Algebra", en: "Arithmetic to Algebra" }, l: "https://khanacademy.org/math", b: "Free" }
+                            { t: "Seneca Learning", d: { de: "Adaptives Training (11-16J)", en: "Adaptive Learning (11-16y)" }, l: "https://senecalearning.com", b: "9-16J" },
+                            { t: "Khan Academy", d: { de: "Mathe-Kurse für alle Niveaus", en: "Math courses for all levels" }, l: "https://khanacademy.org/math", b: "Gratis" },
+                            { t: "White Rose Maths", d: { de: "Strukturierte Mathe-Lektionen", en: "Structured math lessons" }, l: "https://whiteroseeducation.com", b: "9-16J" },
+                            { t: "School.ai", d: { de: "KI-Mathetutor (Login Jak)", en: "AI Math Tutor" }, l: "https://school.ai", b: "AI" }
                         ]
                     },
                     { 
                         de: "Lesen & Schreiben", en: "Literacy",
                         items: [
                             { t: "Pobble", d: { de: "Kreatives Schreiben", en: "Creative Writing" }, l: "https://pobble.com", b: "Writing" },
-                            { t: "CommonLit", d: { de: "Texte & Analyse", en: "Reading & Analysis" }, l: "https://commonlit.org", b: "Reading" }
+                            { t: "CommonLit", d: { de: "Texte & Analyse", en: "Reading & Analysis" }, l: "https://commonlit.org", b: "Reading" },
+                            { t: "The Reading Realm", d: { de: "Interaktive Lese-Ressourcen", en: "Interactive reading resources" }, l: "https://thereadingrealm.co.uk", b: "9-16J" }
                         ]
                     }
                 ]
@@ -101,10 +86,18 @@
                 en: { title: "Biomimicry", desc: "Design Thinking" },
                 subs: [
                     { 
-                        de: "Von der Natur lernen", en: "Learning from Nature",
+                        de: "Innovation & Natur", en: "Innovation & Nature",
                         items: [
-                            { t: "AskNature.org", d: { de: "Bio-Datenbank", en: "Biological Database" }, l: "https://asknature.org", b: "Research" },
-                            { t: "Youthtopia", d: { de: "Permakultur-Masterclass", en: "Permaculture Masterclass" }, l: "https://youthtopia.education", b: "Youthtopia" }
+                            { t: "AskNature.org", d: { de: "Biologische Strategien finden", en: "Find biological strategies" }, l: "https://asknature.org", b: "Research" },
+                            { t: "TED-Ed Biomimicry", d: { de: "Inspirierende Video-Lektionen", en: "Inspiring video lessons" }, l: "https://ed.ted.com", b: "Video" },
+                            { t: "Janine Benyus", d: { de: "Grundlagen der Biomimikry", en: "Foundations of Biomimicry" }, l: "https://biomimicry.org", b: "Masterclass" }
+                        ]
+                    },
+                    { 
+                        de: "Design Prozess", en: "Design Process",
+                        items: [
+                            { t: "Stanford d.school", d: { de: "Design Thinking Framework", en: "Design Thinking Framework" }, l: "https://dschool.stanford.edu", b: "Methods" },
+                            { t: "Pixar in a Box", d: { de: "Storytelling & Design", en: "Storytelling & Design" }, l: "https://khanacademy.org/computing/pixar", b: "Pixar" }
                         ]
                     }
                 ]
@@ -115,10 +108,17 @@
                 en: { title: "Bali & Impact", desc: "Sustainability & SDGs" },
                 subs: [
                     { 
-                        de: "Global & Lokal", en: "Global & Local",
+                        de: "Globaler Impact", en: "Global Impact",
                         items: [
-                            { t: "Earth School", d: { de: "Klimakurs (Zertifikat)", en: "Climate Course (Certificate)" }, l: "https://ed.ted.com/earth-school", b: "TED-Ed" },
-                            { t: "CTC Online", d: { de: "Bali Meeresökologie", en: "Bali Marine Ecology" }, l: "https://bit.ly/cdsonlinectc", b: "Zertifikat" }
+                            { t: "Earth School", d: { de: "30-Tage Klimakurs", en: "30-day climate course" }, l: "https://ed.ted.com/earth-school", b: "Certificate" },
+                            { t: "SDG Crash Course", d: { de: "Die 17 Ziele verstehen", en: "Understand the 17 goals" }, l: "https://youthtopia.education", b: "Free" }
+                        ]
+                    },
+                    { 
+                        de: "Bali Kontext", en: "Bali Context",
+                        items: [
+                            { t: "CTC Bali", d: { de: "Korallen- & Meeresökologie", en: "Coral & Marine Ecology" }, l: "https://bit.ly/cdsonlinectc", b: "Local" },
+                            { t: "Kembali Ke Hutan", d: { de: "Indonesische Wälder (Bahasa)", en: "Indonesian Forests" }, l: "https://youthtopia.education", b: "Forest" }
                         ]
                     }
                 ]
@@ -129,10 +129,17 @@
                 en: { title: "Science & Tech", desc: "Physics & Coding" },
                 subs: [
                     { 
-                        de: "Science", en: "Science",
+                        de: "Physik & Science", en: "Physics & Science",
                         items: [
                             { t: "Khan Academy Physics", d: { de: "Mittelstufe Physik", en: "Middle School Physics" }, l: "https://khanacademy.org/science/ms-physics", b: "Science" },
-                            { t: "CS50 Harvard", d: { de: "Informatik Einführung", en: "CS Introduction" }, l: "https://pll.harvard.edu/course/cs50", b: "Harvard" }
+                            { t: "TED-Ed Science", d: { de: "Naturwissenschaftliche Rätsel", en: "Scientific Riddles" }, l: "https://ed.ted.com", b: "Video" }
+                        ]
+                    },
+                    { 
+                        de: "Informatik", en: "Computer Science",
+                        items: [
+                            { t: "CS50 Harvard", d: { de: "Einführung in Informatik", en: "Intro to Computer Science" }, l: "https://pll.harvard.edu/course/cs50", b: "Elite" },
+                            { t: "Code.org", d: { de: "Programmieren lernen", en: "Learn to Code" }, l: "https://code.org", b: "9-16J" }
                         ]
                     }
                 ]
@@ -143,24 +150,32 @@
                 en: { title: "Storytelling", desc: "Public Speaking" },
                 subs: [
                     { 
-                        de: "Kommunikation", en: "Communication",
+                        de: "Public Speaking", en: "Public Speaking",
                         items: [
-                            { t: "Public Speaking 101", d: { de: "TED-Ed Kurs", en: "TED-Ed Course" }, l: "https://ed.ted.com", b: "Speaking" },
-                            { t: "Melati Wijsen", d: { de: "1-on-1 Masterclass", en: "1-on-1 Masterclass" }, l: "https://youthtopia.education", b: "Expert" }
+                            { t: "TED-Ed Student Talks", d: { de: "Vorträge von Schülern", en: "Talks by students" }, l: "https://ed.ted.com", b: "Speaking" },
+                            { t: "Melati Wijsen", d: { de: "Präsentations-Masterclass", en: "Presentation Masterclass" }, l: "https://youthtopia.education", b: "Expert" }
                         ]
                     }
                 ]
             },
             "06": {
-                color: "#22d3ee", icon: "💡",
-                de: { title: "PEP Support", desc: "Uni-Akademie" },
-                en: { title: "PEP Support", desc: "University Academy" },
+                color: "#22d3ee", icon: "🎓",
+                de: { title: "PEP & Uni", desc: "Mindset & Projekte" },
+                en: { title: "PEP & Uni", desc: "Mindset & Projects" },
                 subs: [
                     { 
-                        de: "Prozess & Akademie", en: "Process & Academy",
+                        de: "Projekt Support", en: "Project Support",
                         items: [
-                            { t: "Impact Guide", d: { de: "Projekt-Unterstützung", en: "Project Support" }, l: "https://youthtopia.education", b: "PEP" },
-                            { t: "Harvard/MIT/OpenLearn", d: { de: "Uni-Kurse (14+)", en: "Uni Courses (14+)" }, l: "#", b: "University" }
+                            { t: "Impact Guide", d: { de: "Deine eigene Idee starten", en: "Start your own idea" }, l: "https://youthtopia.education", b: "PEP" },
+                            { t: "Momentum", d: { de: "Dranbleiben & Gewohnheiten", en: "Consistency & Habits" }, l: "https://youthtopia.education", b: "Mindset" }
+                        ]
+                    },
+                    { 
+                        de: "Uni-Kataloge (14+)", en: "University Catalogues",
+                        items: [
+                            { t: "Harvard Online", d: { de: "Freie Kurse der Harvard Uni", en: "Free courses from Harvard" }, l: "https://pll.harvard.edu", b: "Uni" },
+                            { t: "MIT OCW", d: { de: "Original MIT Kursmaterial", en: "Original MIT courseware" }, l: "https://ocw.mit.edu", b: "MIT" },
+                            { t: "OpenLearn", d: { de: "Zertifikatskurse Open Uni", en: "Open Uni Certificate courses" }, l: "https://open.edu/openlearn", b: "Certificate" }
                         ]
                     }
                 ]
@@ -174,11 +189,8 @@
             document.getElementById('search-btn').innerText = uiTexts[lang].searchBtn;
             document.getElementById('section-label').innerText = uiTexts[lang].sectionLabel;
             document.getElementById('back-button').innerText = uiTexts[lang].backBtn;
-            
-            // Button Styles
             document.getElementById('btn-de').className = lang === 'de' ? 'px-4 py-2 rounded-full text-xs font-bold border-2 bg-black text-white border-black' : 'px-4 py-2 rounded-full text-xs font-bold border-2 border-gray-200';
             document.getElementById('btn-en').className = lang === 'en' ? 'px-4 py-2 rounded-full text-xs font-bold border-2 bg-black text-white border-black' : 'px-4 py-2 rounded-full text-xs font-bold border-2 border-gray-200';
-            
             renderMainGrid();
         }
 
@@ -191,8 +203,7 @@
                         <div class="text-4xl mb-6">${id}</div>
                         <h3 class="text-2xl font-black leading-tight">${content[currentLang].title}<br>${content[currentLang].desc}</h3>
                         <p class="text-sm opacity-90 mt-4 font-medium italic underline">${content.icon} Info</p>
-                    </div>
-                `;
+                    </div>`;
             }
         }
 
@@ -201,15 +212,12 @@
             document.getElementById('category-title').innerText = `${id} ${cat[currentLang].title}`;
             const container = document.getElementById('sub-categories-container');
             container.innerHTML = '';
-            
             cat.subs.forEach(sub => {
                 const subSection = document.createElement('div');
                 subSection.className = "mb-12";
                 subSection.innerHTML = `<h3 class="text-xs font-black text-gray-400 uppercase tracking-[0.3em] mb-6 border-l-4 border-gray-200 pl-4">${sub[currentLang]}</h3>`;
-                
                 const grid = document.createElement('div');
                 grid.className = "grid grid-cols-1 md:grid-cols-2 gap-4";
-                
                 sub.items.forEach(item => {
                     grid.innerHTML += `
                         <a href="${item.l}" target="_blank" class="tool-card p-6 bg-white group">
@@ -223,13 +231,11 @@
                             <div class="mt-6 flex items-center text-xs font-black text-blue-600 opacity-0 group-hover:opacity-100 transition-all transform translate-x-[-10px] group-hover:translate-x-0">
                                 ${currentLang === 'de' ? 'JETZT LERNEN' : 'LEARN NOW'} →
                             </div>
-                        </a>
-                    `;
+                        </a>`;
                 });
                 subSection.appendChild(grid);
                 container.appendChild(subSection);
             });
-
             document.getElementById('main-view').classList.add('hidden');
             document.getElementById('search-section').classList.add('hidden');
             document.getElementById('category-view').classList.remove('hidden');
@@ -242,7 +248,6 @@
             document.getElementById('search-section').classList.remove('hidden');
         }
 
-        // Init
         setLanguage('de');
     </script>
 </body>
