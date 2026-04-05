@@ -18,8 +18,8 @@
 
     <header class="p-6 max-w-5xl mx-auto flex justify-between items-center">
         <div>
-            <h1 class="text-3xl font-black tracking-tight">FHS KI-Navigator</h1>
-            <p id="header-subtitle" class="text-sm text-gray-500 font-medium italic">Lern-Ressourcen Guide • Term 4</p>
+            <h1 class="text-3xl font-black tracking-tight uppercase">FHS KI-Navigator</h1>
+            <p id="header-subtitle" class="text-sm text-gray-500 font-medium">Lern-Ressourcen Guide • Term 4</p>
         </div>
         <div class="flex gap-2">
             <button onclick="setLanguage('de')" id="btn-de" class="px-4 py-2 rounded-full text-xs font-bold border-2 transition-all">DE</button>
@@ -51,8 +51,8 @@
         let currentLang = 'de';
 
         const uiTexts = {
-            de: { subtitle: "Lern-Ressourcen Guide • Term 4", searchPlaceholder: "Was möchtest du heute lernen?", searchBtn: "Suchen", sectionLabel: "Hauptbereiche", backBtn: "← Zurück zur Übersicht" },
-            en: { subtitle: "Learning Resources Guide • Term 4", searchPlaceholder: "What do you want to learn today?", searchBtn: "Search", sectionLabel: "Main Categories", backBtn: "← Back to Overview" }
+            de: { subtitle: "Lern-Ressourcen Guide • Term 4", searchPlaceholder: "Suche nach Tools...", searchBtn: "Suchen", sectionLabel: "Kategorien", backBtn: "← Zurück zur Übersicht" },
+            en: { subtitle: "Learning Resources Guide • Term 4", searchPlaceholder: "Search for tools...", searchBtn: "Search", sectionLabel: "Categories", backBtn: "← Back to Overview" }
         };
 
         const data = {
@@ -62,20 +62,24 @@
                 en: { title: "Foundations", desc: "Math & Language" },
                 subs: [
                     { 
-                        de: "Mathe Werkzeuge", en: "Math Tools",
+                        de: "Mathe — Werkzeuge & Übungen", en: "Math Tools",
                         items: [
                             { t: "Seneca Learning", d: { de: "Adaptives Training (11-16J)", en: "Adaptive Learning (11-16y)" }, l: "https://senecalearning.com", b: "9-16J" },
-                            { t: "Khan Academy", d: { de: "Mathe-Kurse für alle Niveaus", en: "Math courses for all levels" }, l: "https://khanacademy.org/math", b: "Gratis" },
-                            { t: "White Rose Maths", d: { de: "Strukturierte Mathe-Lektionen", en: "Structured math lessons" }, l: "https://whiteroseeducation.com", b: "9-16J" },
-                            { t: "School.ai", d: { de: "KI-Mathetutor (Login Jak)", en: "AI Math Tutor" }, l: "https://school.ai", b: "AI" }
+                            { t: "Khan Academy", d: { de: "Mathe-Kurse für alle Niveaus", en: "Math for all levels" }, l: "https://khanacademy.org/math", b: "Free" },
+                            { t: "White Rose Maths", d: { de: "Strukturierte Lektionen & Übungen", en: "Lessons & Practice" }, l: "https://whiteroseeducation.com", b: "Math" },
+                            { t: "School.ai", d: { de: "KI-Mathetutor (Login bei Jak)", en: "AI Math Tutor" }, l: "https://school.ai", b: "AI" },
+                            { t: "TT Rockstars", d: { de: "Einmaleins-Training (Gamified)", en: "Times Tables practice" }, l: "https://ttrockstars.com", b: "Game" },
+                            { t: "Code.org", d: { de: "Informatik & Logik-Grundlagen", en: "Computer Science basics" }, l: "https://code.org", b: "9-13J" }
                         ]
                     },
                     { 
                         de: "Lesen & Schreiben", en: "Literacy",
                         items: [
-                            { t: "Pobble", d: { de: "Kreatives Schreiben", en: "Creative Writing" }, l: "https://pobble.com", b: "Writing" },
-                            { t: "CommonLit", d: { de: "Texte & Analyse", en: "Reading & Analysis" }, l: "https://commonlit.org", b: "Reading" },
-                            { t: "The Reading Realm", d: { de: "Interaktive Lese-Ressourcen", en: "Interactive reading resources" }, l: "https://thereadingrealm.co.uk", b: "9-16J" }
+                            { t: "Pobble", d: { de: "Kreatives Schreiben & Community", en: "Creative writing community" }, l: "https://pobble.com", b: "Writing" },
+                            { t: "The Reading Realm", d: { de: "Interaktive Lese-Ressourcen", en: "Interactive reading tools" }, l: "https://thereadingrealm.co.uk", b: "Reading" },
+                            { t: "CommonLit", d: { de: "Texte & Kritisches Denken", en: "Texts & critical thinking" }, l: "https://commonlit.org", b: "9-16J" },
+                            { t: "National Centre for Writing", d: { de: "Kurse & Ressourcen für Autoren", en: "Resources for writers" }, l: "https://nationalcentreforwriting.org.uk", b: "Course" },
+                            { t: "ReadWorks / Newsela", d: { de: "Leseverständnis & Sachtexte", en: "Reading comprehension" }, l: "https://readworks.org", b: "9-16J" }
                         ]
                     }
                 ]
@@ -86,18 +90,21 @@
                 en: { title: "Biomimicry", desc: "Design Thinking" },
                 subs: [
                     { 
-                        de: "Innovation & Natur", en: "Innovation & Nature",
+                        de: "Biomimikry & Natur", en: "Biomimicry & Nature",
                         items: [
-                            { t: "AskNature.org", d: { de: "Biologische Strategien finden", en: "Find biological strategies" }, l: "https://asknature.org", b: "Research" },
-                            { t: "TED-Ed Biomimicry", d: { de: "Inspirierende Video-Lektionen", en: "Inspiring video lessons" }, l: "https://ed.ted.com", b: "Video" },
-                            { t: "Janine Benyus", d: { de: "Grundlagen der Biomimikry", en: "Foundations of Biomimicry" }, l: "https://biomimicry.org", b: "Masterclass" }
+                            { t: "AskNature.org", d: { de: "Biologische Strategien & Lösungen", en: "Biological strategies" }, l: "https://asknature.org", b: "Research" },
+                            { t: "TED-Ed: Engineering/Tech", d: { de: "Technik von der Natur inspiriert", en: "Nature-inspired engineering" }, l: "https://ed.ted.com", b: "Video" },
+                            { t: "Janine Benyus", d: { de: "Masterclass: Biomimikry Grundlagen", en: "Biomimicry foundations" }, l: "https://biomimicry.org", b: "Theory" },
+                            { t: "Cheryl Hayashi / Raina Ch.", d: { de: "Spezialisierte Naturforschung", en: "Spider silk & biodiversity" }, l: "https://ted.com", b: "Expert" }
                         ]
                     },
                     { 
-                        de: "Design Prozess", en: "Design Process",
+                        de: "Design Thinking & Prozess", en: "Design Thinking",
                         items: [
-                            { t: "Stanford d.school", d: { de: "Design Thinking Framework", en: "Design Thinking Framework" }, l: "https://dschool.stanford.edu", b: "Methods" },
-                            { t: "Pixar in a Box", d: { de: "Storytelling & Design", en: "Storytelling & Design" }, l: "https://khanacademy.org/computing/pixar", b: "Pixar" }
+                            { t: "Stanford d.school", d: { de: "Der 5-Schritte Design-Prozess", en: "5-step design process" }, l: "https://dschool.stanford.edu", b: "Method" },
+                            { t: "The LAUNCH Cycle", d: { de: "Design Thinking im Klassenzimmer", en: "Launch your projects" }, l: "https://pbl.global", b: "PBL" },
+                            { t: "Pixar in a Box", d: { de: "Animation & Storytelling Design", en: "Animation & Story design" }, l: "https://khanacademy.org/computing/pixar", b: "Design" },
+                            { t: "Verpackungs-Masterclass", d: { de: "Nachhaltiges Produktdesign", en: "Sustainable packaging" }, l: "#", b: "Product" }
                         ]
                     }
                 ]
@@ -108,17 +115,21 @@
                 en: { title: "Bali & Impact", desc: "Sustainability & SDGs" },
                 subs: [
                     { 
-                        de: "Globaler Impact", en: "Global Impact",
+                        de: "Nachhaltigkeit & SDGs", en: "Sustainability",
                         items: [
-                            { t: "Earth School", d: { de: "30-Tage Klimakurs", en: "30-day climate course" }, l: "https://ed.ted.com/earth-school", b: "Certificate" },
-                            { t: "SDG Crash Course", d: { de: "Die 17 Ziele verstehen", en: "Understand the 17 goals" }, l: "https://youthtopia.education", b: "Free" }
+                            { t: "Earth School (TED-Ed)", d: { de: "30-Tage Klimakurs (11+)", en: "30-day climate course" }, l: "https://ed.ted.com/earth-school", b: "Cert" },
+                            { t: "SDG Crash Course", d: { de: "Einführung in alle 17 Ziele", en: "Intro to 17 goals" }, l: "https://youthtopia.education", b: "Basics" },
+                            { t: "Kreislaufwirtschaft", d: { de: "Circular Economy Grundlagen", en: "Circular Economy" }, l: "https://ellenmacarthurfoundation.org", b: "System" },
+                            { t: "Plastik-Herausforderung", d: { de: "Wege aus der Plastikkrise", en: "Solving plastic waste" }, l: "https://ed.ted.com", b: "Global" }
                         ]
                     },
                     { 
-                        de: "Bali Kontext", en: "Bali Context",
+                        de: "Bali & Indonesien", en: "Bali Context",
                         items: [
-                            { t: "CTC Bali", d: { de: "Korallen- & Meeresökologie", en: "Coral & Marine Ecology" }, l: "https://bit.ly/cdsonlinectc", b: "Local" },
-                            { t: "Kembali Ke Hutan", d: { de: "Indonesische Wälder (Bahasa)", en: "Indonesian Forests" }, l: "https://youthtopia.education", b: "Forest" }
+                            { t: "CTC Bali", d: { de: "Korallen- & Meeresökologie (Cert)", en: "Marine Ecology cert" }, l: "https://bit.ly/cdsonlinectc", b: "Local" },
+                            { t: "Kembali Ke Hutan", d: { de: "Regenwaldschutz Indonesien", en: "Forest protection" }, l: "https://youthtopia.education", b: "Bahasa" },
+                            { t: "Moringa TREELOGY", d: { de: "Lokale Landwirtschaft & Superfoods", en: "Local agriculture" }, l: "#", b: "Bali" },
+                            { t: "Schildkrötenschutz", d: { de: "Artenschutz auf Bali", en: "Turtle conservation" }, l: "https://youthtopia.education", b: "Nature" }
                         ]
                     }
                 ]
@@ -129,17 +140,18 @@
                 en: { title: "Science & Tech", desc: "Physics & Coding" },
                 subs: [
                     { 
-                        de: "Physik & Science", en: "Physics & Science",
+                        de: "Physik & Naturwissenschaft", en: "Physics & Science",
                         items: [
-                            { t: "Khan Academy Physics", d: { de: "Mittelstufe Physik", en: "Middle School Physics" }, l: "https://khanacademy.org/science/ms-physics", b: "Science" },
-                            { t: "TED-Ed Science", d: { de: "Naturwissenschaftliche Rätsel", en: "Scientific Riddles" }, l: "https://ed.ted.com", b: "Video" }
+                            { t: "Khan Academy Physics", d: { de: "Kräfte, Energie & Wellen (9-13J)", en: "Forces & Energy" }, l: "https://khanacademy.org/science/ms-physics", b: "9-13J" },
+                            { t: "High School Physics", d: { de: "Fortgeschrittene Physik (14J+)", en: "Advanced Physics" }, l: "https://khanacademy.org/science/physics", b: "14J+" },
+                            { t: "Bio / Chem / Phys", d: { de: "Grundlagen der Naturwissenschaft", en: "General Science" }, l: "https://khanacademy.org", b: "Science" }
                         ]
                     },
                     { 
-                        de: "Informatik", en: "Computer Science",
+                        de: "Informatik & Coding", en: "Computer Science",
                         items: [
-                            { t: "CS50 Harvard", d: { de: "Einführung in Informatik", en: "Intro to Computer Science" }, l: "https://pll.harvard.edu/course/cs50", b: "Elite" },
-                            { t: "Code.org", d: { de: "Programmieren lernen", en: "Learn to Code" }, l: "https://code.org", b: "9-16J" }
+                            { t: "CS50 Harvard", d: { de: "Weltberühmter Informatik-Kurs", en: "Harvard Intro to CS" }, l: "https://pll.harvard.edu/course/cs50", b: "Pro" },
+                            { t: "Technology Lektionen", d: { de: "TED-Ed Engineering & Tech", en: "Engineering & Tech" }, l: "https://ed.ted.com", b: "Tech" }
                         ]
                     }
                 ]
@@ -150,32 +162,41 @@
                 en: { title: "Storytelling", desc: "Public Speaking" },
                 subs: [
                     { 
-                        de: "Public Speaking", en: "Public Speaking",
+                        de: "Präsentieren & Rhetorik", en: "Public Speaking",
                         items: [
-                            { t: "TED-Ed Student Talks", d: { de: "Vorträge von Schülern", en: "Talks by students" }, l: "https://ed.ted.com", b: "Speaking" },
-                            { t: "Melati Wijsen", d: { de: "Präsentations-Masterclass", en: "Presentation Masterclass" }, l: "https://youthtopia.education", b: "Expert" }
+                            { t: "Public Speaking 101", d: { de: "11-teiliger TED-Ed Kurs", en: "TED-Ed course" }, l: "https://ed.ted.com", b: "Speaker" },
+                            { t: "Chris Anderson (TED)", d: { de: "Mastering Public Speaking", en: "Mastering Public Speaking" }, l: "https://ted.com", b: "Pro" },
+                            { t: "TED-Ed Student Talks", d: { de: "Inspiration von anderen Schülern", en: "Talks by students" }, l: "https://ed.ted.com", b: "Watch" }
+                        ]
+                    },
+                    { 
+                        de: "Storytelling & Medien", en: "Media & Film",
+                        items: [
+                            { t: "Film & Denkweisen", d: { de: "Wirkung durch Film & Bild", en: "Impact through film" }, l: "https://youthtopia.education", b: "Media" },
+                            { t: "1-on-1 Melati Wijsen", d: { de: "Rhetorik-Training mit Experten", en: "Speaker training" }, l: "https://youthtopia.education", b: "Expert" }
                         ]
                     }
                 ]
             },
             "06": {
                 color: "#22d3ee", icon: "🎓",
-                de: { title: "PEP & Uni", desc: "Mindset & Projekte" },
-                en: { title: "PEP & Uni", desc: "Mindset & Projects" },
+                de: { title: "PEP Support", desc: "Mindset & Projekte" },
+                en: { title: "PEP Support", desc: "Mindset & Projects" },
                 subs: [
                     { 
-                        de: "Projekt Support", en: "Project Support",
+                        de: "Projekt-Prozess & PEP", en: "PEP Support",
                         items: [
-                            { t: "Impact Guide", d: { de: "Deine eigene Idee starten", en: "Start your own idea" }, l: "https://youthtopia.education", b: "PEP" },
-                            { t: "Momentum", d: { de: "Dranbleiben & Gewohnheiten", en: "Consistency & Habits" }, l: "https://youthtopia.education", b: "Mindset" }
+                            { t: "Impact-Projekt Guide", d: { de: "Eigene Projekte starten & planen", en: "Start impact projects" }, l: "https://youthtopia.education", b: "PEP" },
+                            { t: "Momentum & Gewohnheiten", d: { de: "Dranbleiben & Prozess-Design", en: "Habits & Consistency" }, l: "https://youthtopia.education", b: "Growth" },
+                            { t: "Einnahmen & Wirkung", d: { de: "Projekte finanzieren & skalieren", en: "Funding & Scaling" }, l: "https://youthtopia.education", b: "Impact" }
                         ]
                     },
                     { 
-                        de: "Uni-Kataloge (14+)", en: "University Catalogues",
+                        de: "Uni-Akademie (14J+)", en: "University Catalogues",
                         items: [
-                            { t: "Harvard Online", d: { de: "Freie Kurse der Harvard Uni", en: "Free courses from Harvard" }, l: "https://pll.harvard.edu", b: "Uni" },
-                            { t: "MIT OCW", d: { de: "Original MIT Kursmaterial", en: "Original MIT courseware" }, l: "https://ocw.mit.edu", b: "MIT" },
-                            { t: "OpenLearn", d: { de: "Zertifikatskurse Open Uni", en: "Open Uni Certificate courses" }, l: "https://open.edu/openlearn", b: "Certificate" }
+                            { t: "Harvard Online", d: { de: "100+ kostenlose Harvard Kurse", en: "Free Harvard courses" }, l: "https://pll.harvard.edu", b: "Uni" },
+                            { t: "MIT OpenCourseWare", d: { de: "2.500+ Original-MIT Kurse", en: "Original MIT courses" }, l: "https://ocw.mit.edu", b: "MIT" },
+                            { t: "OpenLearn", d: { de: "Hunderte Zertifikats-Kurse", en: "Free certificate courses" }, l: "https://open.edu/openlearn", b: "Cert" }
                         ]
                     }
                 ]
@@ -199,17 +220,17 @@
             grid.innerHTML = '';
             for (const [id, content] of Object.entries(data)) {
                 grid.innerHTML += `
-                    <div onclick="showCategory('${id}')" class="category-card p-8 text-white" style="background-color: ${content.color}">
-                        <div class="text-4xl mb-6">${id}</div>
+                    <div onclick="showCategory('${id}')" class="category-card p-8 text-white shadow-sm" style="background-color: ${content.color}">
+                        <div class="text-4xl mb-6 font-black">${id}</div>
                         <h3 class="text-2xl font-black leading-tight">${content[currentLang].title}<br>${content[currentLang].desc}</h3>
-                        <p class="text-sm opacity-90 mt-4 font-medium italic underline">${content.icon} Info</p>
+                        <p class="text-xs opacity-80 mt-4 font-bold uppercase tracking-widest">${content.icon} Click to explore</p>
                     </div>`;
             }
         }
 
         function showCategory(id) {
             const cat = data[id];
-            document.getElementById('category-title').innerText = `${id} ${cat[currentLang].title}`;
+            document.getElementById('category-title').innerText = `${id} — ${cat[currentLang].title}`;
             const container = document.getElementById('sub-categories-container');
             container.innerHTML = '';
             cat.subs.forEach(sub => {
@@ -229,7 +250,7 @@
                                 <p class="text-gray-500 text-sm font-medium leading-relaxed">${item.d[currentLang]}</p>
                             </div>
                             <div class="mt-6 flex items-center text-xs font-black text-blue-600 opacity-0 group-hover:opacity-100 transition-all transform translate-x-[-10px] group-hover:translate-x-0">
-                                ${currentLang === 'de' ? 'JETZT LERNEN' : 'LEARN NOW'} →
+                                ${currentLang === 'de' ? 'JETZT ÖFFNEN' : 'OPEN NOW'} →
                             </div>
                         </a>`;
                 });
