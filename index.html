@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,87 +8,84 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --font-display: 'Syne', sans-serif;
-    --font-body: 'Nunito', sans-serif;
-  }
-  * { font-family: var(--font-body); }
-  .font-display { font-family: var(--font-display); }
-  body { background: #F7F5F0; }
-  .cat-card { transition: transform 0.18s cubic-bezier(.34,1.56,.64,1), box-shadow 0.18s ease; }
-  .cat-card:hover { transform: translateY(-4px) scale(1.02); }
-  .tool-card { transition: box-shadow 0.15s ease, transform 0.15s ease; }
-  .tool-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.10); }
-  .lang-btn { transition: all 0.15s; }
-  #search-input:focus { outline: none; box-shadow: 0 0 0 3px rgba(99,102,241,0.25); }
-  .back-btn { transition: all 0.15s; }
-  .back-btn:hover { transform: translateX(-3px); }
-  .badge { font-size: 11px; font-weight: 700; letter-spacing: 0.03em; }
-  .view { animation: fadeSlide 0.22s ease both; }
-  @keyframes fadeSlide { from { opacity:0; transform: translateY(12px); } to { opacity:1; transform: translateY(0); } }
-  .section-title::after { content:''; display:block; width:40px; height:3px; border-radius:2px; margin-top:6px; background: currentColor; opacity:0.35; }
-  .highlight { background: rgba(99,102,241,0.18); border-radius: 3px; padding: 0 2px; }
-  ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
-  .paid-card { background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%); }
+  :root { --font-display:'Syne',sans-serif; --font-body:'Nunito',sans-serif; }
+  *    { font-family:var(--font-body); }
+  .font-display { font-family:var(--font-display); }
+  body { background:#F7F5F0; }
+  .cat-card  { transition:transform .18s cubic-bezier(.34,1.56,.64,1),box-shadow .18s ease; }
+  .cat-card:hover { transform:translateY(-4px) scale(1.02); }
+  .tool-card { transition:box-shadow .15s ease,transform .15s ease; }
+  .tool-card:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,.10); }
+  .back-btn:hover { transform:translateX(-3px); }
+  #search-input:focus { outline:none; box-shadow:0 0 0 3px rgba(99,102,241,.25); }
+  .view { animation:fadeSlide .22s ease both; }
+  @keyframes fadeSlide { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+  .sec-title::after { content:''; display:block; width:36px; height:3px; border-radius:2px; margin-top:5px; background:currentColor; opacity:.3; }
+  mark { background:rgba(99,102,241,.18); border-radius:3px; padding:0 2px; }
+  ::-webkit-scrollbar{width:5px} ::-webkit-scrollbar-thumb{background:#d1d5db;border-radius:3px}
 </style>
 </head>
 <body class="min-h-screen">
 
-<!-- HEADER -->
+<!-- ═══ HEADER ═══════════════════════════════════════════════ -->
 <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm">
   <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
     <div class="flex items-center gap-3">
-      <div class="w-9 h-9 rounded-xl bg-green-500 flex items-center justify-center text-white font-display font-800 text-sm shadow">FH</div>
+      <div class="w-9 h-9 rounded-xl bg-green-500 flex items-center justify-center text-white font-bold text-sm shadow select-none">FH</div>
       <div>
         <div class="font-display font-bold text-gray-900 text-sm leading-tight">Future Human School</div>
-        <div id="header-sub" class="text-xs text-gray-400 leading-tight">Resource Hub · Term 4</div>
+        <div class="text-xs text-gray-400 leading-tight">Resource Hub · Term 4 · 2026</div>
       </div>
     </div>
     <div class="flex items-center gap-2">
       <div class="relative hidden sm:block">
-        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">🔍</span>
-        <input id="search-input" type="text" placeholder="Search resources…" class="pl-9 pr-4 py-2 rounded-xl bg-gray-100 text-sm text-gray-700 w-52 border border-transparent focus:bg-white focus:border-indigo-200" oninput="handleSearch(this.value)" onkeydown="if(event.key==='Enter')handleSearch(this.value)">
+        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none">🔍</span>
+        <input id="search-input" type="search" placeholder="Search resources…"
+          class="pl-9 pr-4 py-2 rounded-xl bg-gray-100 text-sm text-gray-700 w-52 border border-transparent focus:bg-white focus:border-indigo-200 transition-colors"
+          oninput="handleSearch(this.value)">
       </div>
-      <button id="lang-toggle" onclick="toggleLang()" class="lang-btn px-3 py-2 rounded-xl bg-gray-900 text-white text-xs font-bold hover:bg-gray-700">EN</button>
+      <button id="lang-toggle" onclick="toggleLang()"
+        class="px-3 py-2 rounded-xl bg-gray-900 text-white text-xs font-bold hover:bg-gray-700 transition-colors">DE</button>
     </div>
   </div>
 </header>
 
-<!-- MAIN -->
+<!-- ═══ MAIN ══════════════════════════════════════════════════ -->
 <main class="max-w-6xl mx-auto px-4 py-6">
 
   <!-- HOME VIEW -->
   <div id="view-home" class="view">
     <div class="mb-6">
-      <h1 id="home-title" class="font-display text-3xl font-bold text-gray-900 mb-1">What do you want to learn?</h1>
-      <p id="home-sub" class="text-gray-500 text-sm">Pick a category — all resources are free and open in your browser.</p>
+      <h1 id="home-title" class="font-display text-3xl font-bold text-gray-900 mb-1"></h1>
+      <p  id="home-sub"   class="text-gray-500 text-sm"></p>
     </div>
     <!-- Mobile search -->
     <div class="sm:hidden mb-4 relative">
-      <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">🔍</span>
-      <input type="text" placeholder="Search resources…" class="w-full pl-9 pr-4 py-3 rounded-2xl bg-white text-sm text-gray-700 border border-gray-200 focus:outline-none focus:border-indigo-300" oninput="handleSearch(this.value)">
+      <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none">🔍</span>
+      <input type="search" placeholder="Search…"
+        class="w-full pl-9 pr-4 py-3 rounded-2xl bg-white text-sm text-gray-700 border border-gray-200 focus:outline-none focus:border-indigo-300"
+        oninput="handleSearch(this.value)">
     </div>
     <div id="category-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4"></div>
-
-    <!-- Search Results -->
-    <div id="search-results" class="hidden mt-6">
-      <h2 id="search-title" class="font-display text-lg font-bold text-gray-800 mb-3">Search results</h2>
+    <!-- Search results (shown in home view) -->
+    <div id="search-results" class="hidden mt-8">
+      <h2 id="search-title" class="font-display text-lg font-bold text-gray-800 mb-3"></h2>
       <div id="search-list" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
     </div>
   </div>
 
   <!-- CATEGORY VIEW -->
   <div id="view-category" class="view hidden">
-    <button class="back-btn flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-gray-900 mb-5" onclick="showHome()">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <span id="back-label">All categories</span>
+    <button class="back-btn flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-gray-900 mb-5 transition-all" onclick="showHome()">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span id="back-label"></span>
     </button>
     <div id="cat-header" class="rounded-3xl p-6 mb-6 text-white flex items-start gap-4">
-      <div id="cat-icon" class="text-5xl leading-none mt-1"></div>
+      <div id="cat-icon"     class="text-5xl leading-none mt-1 select-none"></div>
       <div>
-        <div id="cat-title" class="font-display text-2xl font-bold leading-tight"></div>
-        <div id="cat-subtitle" class="text-white/70 text-sm mt-1"></div>
-        <div id="cat-count" class="text-white/60 text-xs mt-2 font-semibold"></div>
+        <div id="cat-title"    class="font-display text-2xl font-bold leading-tight"></div>
+        <div id="cat-subtitle" class="text-white/70 text-sm mt-1 leading-relaxed max-w-xl"></div>
+        <div id="cat-count"    class="text-white/50 text-xs mt-2 font-semibold"></div>
       </div>
     </div>
     <div id="cat-sections"></div>
@@ -96,608 +93,682 @@
 
 </main>
 
+<!-- FOOTER -->
+<footer class="mt-12 border-t border-gray-200 py-6 text-center px-4">
+  <p class="text-xs text-gray-400">Future Human School Bali · Resource Hub · Term 4 · March 30 – June 5, 2026</p>
+  <p class="text-xs text-gray-400 mt-1">Nature has been solving design problems for 3.8 billion years. You have until June 5th. 🌿</p>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════════════
+     DATA  —  All content from FHS T4 Learning Resources PDF
+     URLs verified + corrected:
+       • ted.com → www.ted.com  (4 corrections)
+       • khanacademy.org → www.khanacademy.org  (2 corrections)
+       • freehomeschool → free-homeschool  (1 correction)
+       • TED-Ed Biomimicry: replaced invented URL with real search
+     Kept as-is (matches PDF exactly):
+       • gaining-momentum-and-howt-to-keep-going…  ("howt" is in original PDF)
+       • can-the-circular-economy…  (PDF typo "canthe" → hyphenated correctly)
+     ═══════════════════════════════════════════════════════════ -->
 <script>
+const CATS = [
+
+  // ── 1. MATHS ──────────────────────────────────────────────────
+  {
+    id:'maths', icon:'🧮',
+    gradient:'linear-gradient(135deg,#F59E0B 0%,#D97706 100%)',
+    accent:'#D97706',
+    en:{title:'Maths',             subtitle:'Games, practice, AI tutoring and printable workbooks — all free, ages 9–16'},
+    de:{title:'Mathe',             subtitle:'Spiele, Übungen, KI-Nachhilfe und Arbeitshefte — alles kostenlos, 9–16 Jahre'},
+    sections:[{
+      en:'Tools & Practice', de:'Werkzeuge & Übungen',
+      tools:[
+        { id:'seneca-m', icon:'🚀',
+          en:{name:'Seneca Learning — adaptive maths revision',
+              desc:'Free course-based revision across maths topics. Adaptive — gets harder as you improve. Works well for 11–16.'},
+          de:{name:'Seneca Learning — adaptives Mathe-Training',
+              desc:'Kostenlose Mathe-Wiederholung. Passt sich an — wird schwieriger, wenn du besser wirst. Ideal für 11–16.'},
+          url:'https://senecalearning.com', badge:'11–16 · free', src:'SENECA' },
+
+        { id:'khan-m', icon:'🎓',
+          en:{name:'Khan Academy — all levels, arithmetic to algebra',
+              desc:'Self-paced with videos, practice exercises and progress tracking. Best structured free maths resource online.'},
+          de:{name:'Khan Academy — alle Niveaus, Arithmetik bis Algebra',
+              desc:'Im eigenen Tempo mit Videos, Übungen und Fortschrittsverfolgung. Die beste kostenlose Mathe-Ressource online.'},
+          // ✓ CORRECTED: added www.
+          url:'https://www.khanacademy.org/math', badge:'All ages · free', src:'KHAN ACADEMY' },
+
+        { id:'whiterose', icon:'📝',
+          en:{name:'White Rose Maths — free lessons and worksheets',
+              desc:'Structured schemes of work, free lesson videos and worksheets. UK curriculum-aligned, trusted by schools.'},
+          de:{name:'White Rose Maths — kostenlose Lektionen und Arbeitsblätter',
+              desc:'Strukturierte Lehrpläne, kostenlose Unterrichtsvideos und Arbeitsblätter. Am britischen Lehrplan orientiert.'},
+          url:'https://whiteroseeducation.com', badge:'All ages · free', src:'WHITE ROSE MATHS' },
+
+        { id:'schoolai', icon:'🤖',
+          en:{name:'School.AI — AI maths tutor (see Jak for login)',
+              desc:'AI-powered personalised tutoring. Students get hints, explanations and worked examples. Jak has school logins.'},
+          de:{name:'School.AI — KI-Mathetutor (Login bei Jak)',
+              desc:'KI-gestützte personalisierte Nachhilfe. Schüler bekommen Tipps, Erklärungen und vorgerechnete Beispiele.'},
+          url:'https://schoolai.com', badge:'All ages · school login', src:'SCHOOL.AI' },
+
+        { id:'ttrocks', icon:'🎮',
+          en:{name:'TT Rockstars & Prodigy — maths games (see Jak)',
+              desc:'Times tables and number fluency games. Competitive and genuinely fun. School login required — see Jak.'},
+          de:{name:'TT Rockstars & Prodigy — Mathe-Spiele (Login bei Jak)',
+              desc:'Einmaleins und Zahlenflüssigkeits-Spiele. Wettbewerbsorientiert und wirklich spaßig.'},
+          url:'https://ttrockstars.com', badge:'9–14 · school login', src:'TT ROCKSTARS / PRODIGY',
+          urlB:'https://prodigygame.com', labelB:'Prodigy →' },
+
+        { id:'codeorg', icon:'💻',
+          en:{name:'Code.org + Good & Beautiful printable workbooks',
+              desc:'Code.org: free coding courses (see Jak for login). Good & Beautiful: free printable maths workbooks, all levels.'},
+          de:{name:'Code.org + Good & Beautiful Arbeitshefte',
+              desc:'Code.org: kostenlose Coding-Kurse. Good & Beautiful: kostenlose ausdruckbare Mathe-Arbeitshefte für alle Niveaus.'},
+          url:'https://code.org', badge:'All ages · free', src:'CODE.ORG / GOOD & BEAUTIFUL',
+          // ✓ CORRECTED: freehomeschool → free-homeschool
+          urlB:'https://goodandbeautiful.com/pages/free-homeschool-math-curriculum', labelB:'Good & Beautiful →' }
+      ]
+    }]
+  },
+
+  // ── 2. READING & WRITING ──────────────────────────────────────
+  {
+    id:'reading', icon:'✍️',
+    gradient:'linear-gradient(135deg,#F97316 0%,#EA580C 100%)',
+    accent:'#EA580C',
+    en:{title:'Reading & Writing',   subtitle:'Comprehension, creative writing, independent reading — all free, ages 9–16'},
+    de:{title:'Lesen & Schreiben',   subtitle:'Textverständnis, kreatives Schreiben, selbständiges Lesen — kostenlos, 9–16 Jahre'},
+    sections:[{
+      en:'Tools & Resources', de:'Werkzeuge & Ressourcen',
+      tools:[
+        { id:'pobble', icon:'✏️',
+          en:{name:'Pobble — creative writing community',
+              desc:'Students publish their writing to a real global audience. Prompts, moderated community, high-quality examples.'},
+          de:{name:'Pobble — Community für kreatives Schreiben',
+              desc:'Schüler veröffentlichen ihre Texte für ein echtes weltweites Publikum. Schreibimpulse, moderierte Community.'},
+          url:'https://www.pobble.com', badge:'All ages · free', src:'POBBLE' },
+
+        { id:'rdm-realm', icon:'📚',
+          en:{name:'The Reading Realm — reading resources',
+              desc:'Beautifully made free reading resources, book recommendations and comprehension activities for 9–16.'},
+          de:{name:'The Reading Realm — Lese-Ressourcen',
+              desc:'Wunderschön gestaltete kostenlose Lesematerialien, Buchempfehlungen und Verständnisaufgaben für 9–16.'},
+          url:'https://thereadingrealm.co.uk', badge:'9–16 · free', src:'THE READING REALM' },
+
+        { id:'seneca-eng', icon:'🔤',
+          en:{name:'Seneca — English language & literature',
+              desc:'Free English revision courses covering reading, comprehension and writing techniques. Same platform as maths.'},
+          de:{name:'Seneca — Englische Sprache & Literatur',
+              desc:'Kostenlose Englisch-Wiederholungskurse zu Lesen, Textverständnis und Schreibtechniken. Gleiche Plattform wie Mathe.'},
+          url:'https://senecalearning.com', badge:'11–16 · free', src:'SENECA' },
+
+        { id:'commonlit', icon:'📖',
+          en:{name:'CommonLit — real texts with discussion questions',
+              desc:'High-quality fiction and non-fiction with guided reading questions. Excellent for developing critical thinking.'},
+          de:{name:'CommonLit — echte Texte mit Diskussionsfragen',
+              desc:'Hochwertige Belletristik und Sachbücher mit geleiteten Lesefragen. Ausgezeichnet für kritisches Denken.'},
+          url:'https://commonlit.org', badge:'10–16 · free', src:'COMMONLIT' },
+
+        { id:'ncw', icon:'🖊️',
+          en:{name:'National Centre for Writing — free creative writing courses',
+              desc:'Self-paced courses on poetry, character, storytelling. UK-based, proper quality. Perfect PEP support.'},
+          de:{name:'National Centre for Writing — kostenlose Kreativschreib-Kurse',
+              desc:'Selbst gesteuerte Kurse zu Poesie, Figuren, Storytelling. UK-basiert, echte Qualität. Perfekte PEP-Unterstützung.'},
+          url:'https://nationalcentreforwriting.org.uk/get-involved/young-people', badge:'All ages · free', src:'NATIONAL CENTRE FOR WRITING' },
+
+        { id:'readworks', icon:'📰',
+          en:{name:'ReadWorks & Newsela — reading comprehension',
+              desc:'ReadWorks: free non-fiction passages + questions. Newsela: current news at adjustable reading levels.'},
+          de:{name:'ReadWorks & Newsela — Leseverständnis',
+              desc:'ReadWorks: kostenlose Sachtexte + Fragen. Newsela: aktuelle Nachrichten auf anpassbaren Lesestufen.'},
+          url:'https://www.readworks.org', badge:'9–16 · free', src:'READWORKS / NEWSELA',
+          urlB:'https://newsela.com', labelB:'Newsela →' }
+      ]
+    }]
+  },
+
+  // ── 3. BIOMIMICRY & NATURE ────────────────────────────────────
+  {
+    id:'biomimicry', icon:'🌿',
+    gradient:'linear-gradient(135deg,#22C55E 0%,#16A34A 100%)',
+    accent:'#16A34A',
+    en:{title:'Biomimicry & Nature', subtitle:'Learn how nature solves design problems — and how we can copy it'},
+    de:{title:'Biomimikry & Natur',  subtitle:'Lerne, wie die Natur Designprobleme löst — und wie wir das kopieren können'},
+    sections:[{
+      en:'01 · Biomimicry & Nature', de:'01 · Biomimikry & Natur',
+      tools:[
+        { id:'teded-bio', icon:'🎬',
+          en:{name:'Biomimicry: technology inspired by nature (TED-Ed)',
+              desc:'Short animated lessons with quiz — explore the topic. All ages, 8 min.'},
+          de:{name:'Biomimikry: Technik, inspiriert von der Natur (TED-Ed)',
+              desc:'Kurze animierte Lektionen mit Quiz — erkunde das Thema. Für alle, 8 Min.'},
+          // ✓ CORRECTED: replaced invented URL with TED-Ed biomimicry search (no specific URL given in PDF)
+          url:'https://ed.ted.com/search#query=biomimicry', badge:'All ages · 8 min', src:'TED-ED' },
+
+        { id:'janine', icon:'🎤',
+          en:{name:'Biomimicry in action — Janine Benyus (TED Talk)',
+              desc:'The original talk — velcro, sharkskin, termite towers. Nature as the design brief.'},
+          de:{name:'Biomimikry in Aktion — Janine Benyus (TED Talk)',
+              desc:'Der Originalvortrag — Klettverschluss, Haifischhaut, Termitentürme. Die Natur als Design-Briefing.'},
+          // ✓ CORRECTED: ted.com → www.ted.com
+          url:'https://www.ted.com/talks/janine_benyus_biomimicry_in_action', badge:'12+ · free', src:'TED TALK' },
+
+        { id:'spider', icon:'🕷️',
+          en:{name:'The magnificence of spider silk — Cheryl Hayashi (TED Talk)',
+              desc:'How spiders make 7 types of silk and what we can learn to make from it.'},
+          de:{name:'Die Großartigkeit der Spinnenseide — Cheryl Hayashi (TED Talk)',
+              desc:'Wie Spinnen 7 Arten von Seide herstellen und was wir daraus machen können.'},
+          // ✓ CORRECTED: ted.com → www.ted.com
+          url:'https://www.ted.com/talks/cheryl_hayashi_the_magnificence_of_spider_silk', badge:'11+ · free', src:'TED TALK' },
+
+        { id:'raina', icon:'🌱',
+          en:{name:'Biomimicry: designs inspired by nature — Raina Chaurasia (TED Talk)',
+              desc:'A young speaker on this exact topic. Great PEP inspiration.'},
+          de:{name:'Biomimikry: von der Natur inspirierte Designs — Raina Chaurasia (TED Talk)',
+              desc:'Eine junge Sprecherin genau zu diesem Thema. Tolle PEP-Inspiration.'},
+          // ✓ CORRECTED: ted.com → www.ted.com
+          url:'https://www.ted.com/talks/raina_chaurasia_biomimicry_designs_inspired_by_nature', badge:'9+ · free', src:'TED TALK — YOUTH SPEAKER' },
+
+        { id:'asknature', icon:'🔍',
+          en:{name:"AskNature.org — search nature's solutions",
+              desc:"Search 'waterproof', 'flexible', 'strong' — see how nature already solved it."},
+          de:{name:"AskNature.org — Lösungen der Natur durchsuchen",
+              desc:"Suche nach 'wasserdicht', 'flexibel', 'stark' — und sieh, wie die Natur es schon gelöst hat."},
+          url:'https://asknature.org', badge:'All ages · explore', src:'BIOMIMICRY INSTITUTE' },
+
+        { id:'permaculture', icon:'🌾',
+          en:{name:'Permaculture Masterclass (Youthtopia)',
+              desc:'Designing systems that work with nature — directly relevant to Bali.'},
+          de:{name:'Permakultur-Masterclass (Youthtopia)',
+              desc:'Systeme entwerfen, die mit der Natur arbeiten — direkt relevant für Bali.'},
+          url:'https://youthtopia.education/courses/permaculture-masterclass', badge:'All ages · free', src:'YOUTHTOPIA', local:true }
+      ]
+    }]
+  },
+
+  // ── 4. DESIGN THINKING ────────────────────────────────────────
+  {
+    id:'design', icon:'🛠️',
+    gradient:'linear-gradient(135deg,#14B8A6 0%,#0D9488 100%)',
+    accent:'#0D9488',
+    en:{title:'Design Thinking & Making', subtitle:'Define a problem, generate ideas, prototype and test'},
+    de:{title:'Design Thinking & Umsetzen', subtitle:'Ein Problem definieren, Ideen entwickeln, Prototypen bauen und testen'},
+    sections:[{
+      en:'02 · Design Thinking & Making', de:'02 · Design Thinking & Umsetzen',
+      tools:[
+        { id:'stanford', icon:'🏛️',
+          en:{name:'Stanford design thinking process (TED-Ed)',
+              desc:'Define → Ideate → Prototype → Test. A 5-step framework with quiz.'},
+          de:{name:'Stanford Design-Thinking-Prozess (TED-Ed)',
+              desc:'Definieren → Ideen → Prototyp → Test. Ein 5-Schritte-Rahmen mit Quiz.'},
+          url:'https://ed.ted.com/on/o57WihZH', badge:'11+', src:'TED-ED' },
+
+        { id:'launch', icon:'🚀',
+          en:{name:'The LAUNCH cycle — design thinking for students (TED-Ed)',
+              desc:'A student-friendly version of human-centred design. Do this before prototyping.'},
+          de:{name:'Der LAUNCH-Zyklus — Design Thinking für Schüler (TED-Ed)',
+              desc:'Eine schülerfreundliche Version des menschenzentrierten Designs. Mach das vor dem Prototyping.'},
+          url:'https://ed.ted.com/on/LMpd22xR', badge:'9+', src:'TED-ED' },
+
+        { id:'pawlyn', icon:'🏗️',
+          en:{name:"Using nature's genius in architecture — Michael Pawlyn (TED Talk)",
+              desc:'Radical resource efficiency, closed loops, solar energy — biomimicry meets architecture.'},
+          de:{name:"Die Genialität der Natur in der Architektur — Michael Pawlyn (TED Talk)",
+              desc:'Radikale Ressourceneffizienz, geschlossene Kreisläufe, Solarenergie — Biomimikry trifft Architektur.'},
+          // ✓ CORRECTED: ted.com → www.ted.com
+          url:'https://www.ted.com/talks/michael_pawlyn_using_nature_s_genius_in_architecture', badge:'9+', src:'TED TALK' },
+
+        { id:'pixar', icon:'🎥',
+          en:{name:'Pixar in a Box — design through storytelling (Khan Academy)',
+              desc:'How Pixar uses maths, physics and story. Interactive and genuinely brilliant.'},
+          de:{name:'Pixar in a Box — Design durch Storytelling (Khan Academy)',
+              desc:'Wie Pixar Mathe, Physik und Storytelling nutzt. Interaktiv und wirklich brillant.'},
+          // ✓ CORRECTED: khanacademy.org → www.khanacademy.org
+          url:'https://www.khanacademy.org/computing/pixar', badge:'All ages', src:'KHAN ACADEMY' },
+
+        { id:'critical', icon:'🧠',
+          en:{name:'5 tips to improve your critical thinking (TED-Ed)',
+              desc:'A 5-step framework for tackling any design or research problem — with quiz.'},
+          de:{name:'5 Tipps zur Verbesserung deines kritischen Denkens (TED-Ed)',
+              desc:'Ein 5-Schritte-Rahmen für jedes Design- oder Forschungsproblem — mit Quiz.'},
+          url:'https://ed.ted.com/lessons/5-tips-to-improve-your-critical-thinking-samantha-agoos', badge:'All ages · free', src:'TED-ED' },
+
+        { id:'packaging', icon:'📦',
+          en:{name:'Rethinking and Redesigning Packaging Masterclass (Youthtopia)',
+              desc:'A masterclass on sustainable product design — exactly on theme for this term.'},
+          de:{name:'Verpackungen neu denken und gestalten — Masterclass (Youthtopia)',
+              desc:'Eine Masterclass über nachhaltiges Produktdesign — genau das Thema dieses Terms.'},
+          url:'https://youthtopia.education/courses/rethinking-and-redesigning-packaging', badge:'13+', src:'YOUTHTOPIA' }
+      ]
+    }]
+  },
+
+  // ── 5. SUSTAINABILITY & SDGs ──────────────────────────────────
+  {
+    id:'sustainability', icon:'🌍',
+    gradient:'linear-gradient(135deg,#84CC16 0%,#65A30D 100%)',
+    accent:'#65A30D',
+    en:{title:'Sustainability & the SDGs', subtitle:'Understanding why it matters and what we can do'},
+    de:{title:'Nachhaltigkeit & die SDGs', subtitle:'Verstehen, warum es wichtig ist und was wir tun können'},
+    sections:[
+      {
+        en:'03 · Sustainability & the SDGs', de:'03 · Nachhaltigkeit & die SDGs',
+        tools:[
+          { id:'earthschool', icon:'🌏',
+            en:{name:'Earth School — 30-lesson climate programme (TED-Ed)',
+                desc:'Complete 30 lessons → earn a certificate. Covers energy, food, oceans, activism.'},
+            de:{name:'Earth School — 30-Lektionen Klimaprogramm (TED-Ed)',
+                desc:'30 Lektionen abschließen → Zertifikat erhalten. Themen: Energie, Ernährung, Ozeane, Aktivismus.'},
+            url:'https://ed.ted.com/earth-school', badge:'11+ · certificate', src:'TED-ED CERTIFICATE' },
+
+          { id:'circular', icon:'♻️',
+            en:{name:'The circular economy — re-thinking progress (TED-Ed)',
+                desc:'How we redesign manufacturing so products are made to be made again.'},
+            de:{name:'Die Kreislaufwirtschaft — Fortschritt neu denken (TED-Ed)',
+                desc:'Wie wir die Fertigung neu gestalten, damit Produkte zum Wiederherstellen gemacht werden.'},
+            url:'https://ed.ted.com/best_of_web/2Yy019iv', badge:'11+', src:'TED-ED' },
+
+          { id:'plastics', icon:'🧴',
+            en:{name:'Can the circular economy solve our plastics problem? (TED-Ed)',
+                desc:'Directly relevant to what students see every day in Bali.'},
+            de:{name:'Kann die Kreislaufwirtschaft unser Plastikproblem lösen? (TED-Ed)',
+                desc:'Direkt relevant für das, was Schüler täglich auf Bali sehen.'},
+            // ✓ NOTE: PDF shows "canthe" (line-break artefact) — corrected to "can-the"
+            url:'https://ed.ted.com/best_of_web/can-the-circular-economy-solve-our-plastics-problem', badge:'9+', src:'TED-ED' },
+
+          { id:'sdg-crash', icon:'🎯',
+            en:{name:'SDG crash course (Youthtopia)',
+                desc:'5-star rated. Best free intro to all 17 SDGs — essential background for this term.'},
+            de:{name:'SDG-Crashkurs (Youthtopia)',
+                desc:'Mit 5 Sternen bewertet. Beste kostenlose Einführung in alle 17 SDGs — wesentliches Hintergrundwissen.'},
+            url:'https://youthtopia.education/courses/sustainable-development-goals-crash-course', badge:'All ages · free', src:'YOUTHTOPIA' },
+
+          { id:'sustain-master', icon:'🌱',
+            en:{name:'Sustainability masterclass (Youthtopia)',
+                desc:'A clear overview of what sustainability actually means in practice. SDGs, real-world case studies.'},
+            de:{name:'Nachhaltigkeits-Masterclass (Youthtopia)',
+                desc:'Ein klarer Überblick darüber, was Nachhaltigkeit in der Praxis bedeutet. SDGs, reale Fallstudien.'},
+            url:'https://youthtopia.education/courses/the-basics-of-sustainability-masterclass', badge:'All ages · free', src:'YOUTHTOPIA' },
+
+          { id:'harvard-infra', icon:'🏙️',
+            en:{name:'Sustainable Infrastructure — Harvard (free)',
+                desc:'SDGs, real-world case studies, what makes a project sustainable. Best for 14+.'},
+            de:{name:'Nachhaltige Infrastruktur — Harvard (kostenlos)',
+                desc:'SDGs, reale Fallstudien, was ein Projekt nachhaltig macht. Am besten für 14+.'},
+            url:'https://pll.harvard.edu/course/sustainable-infrastructure', badge:'14+ · free', src:'HARVARD' }
+        ]
+      },
+      {
+        en:'🌴 Bali & Indonesia — Local Context', de:'🌴 Bali & Indonesien — Lokaler Kontext',
+        tools:[
+          { id:'kembali', icon:'🌳',
+            en:{name:'Kembali Ke Hutan — returning to the forest (Youthtopia)',
+                desc:'An Indonesian course about returning to the forest — produced locally, in Bahasa.'},
+            de:{name:'Kembali Ke Hutan — Zurück in den Wald (Youthtopia)',
+                desc:'Ein indonesischer Kurs über die Rückkehr in den Wald — lokal produziert, auf Bahasa.'},
+            url:'https://youthtopia.education/courses/kembali-ke-hutan', badge:'All ages · free', src:'YOUTHTOPIA', local:true },
+
+          { id:'turtle', icon:'🐢',
+            en:{name:'Turtle Conservation (Youthtopia)',
+                desc:'Sea turtle conservation — a real ongoing challenge in Bali.'},
+            de:{name:'Schildkrötenschutz (Youthtopia)',
+                desc:'Meeresschildkrötenschutz — eine echte, laufende Herausforderung auf Bali.'},
+            url:'https://youthtopia.education/courses/turtle-conservation', badge:'All ages · free', src:'YOUTHTOPIA', local:true },
+
+          { id:'ocean-plastic', icon:'🌊',
+            en:{name:'Ocean Plastic Pollution Masterclass (Youthtopia)',
+                desc:'5-star rated. The scale of ocean plastic and what\'s being done about it.'},
+            de:{name:'Meeresplastikverschmutzung Masterclass (Youthtopia)',
+                desc:'Mit 5 Sternen bewertet. Das Ausmaß von Meeresplastik und was dagegen getan wird.'},
+            url:'https://youthtopia.education/courses/ocean-plastic-pollution', badge:'All ages · free', src:'YOUTHTOPIA', local:true },
+
+          { id:'moringa', icon:'🍃',
+            en:{name:'The Power of Moringa with TREELOGY (Youthtopia)',
+                desc:'How one plant can solve multiple problems — a great biomimicry case study.'},
+            de:{name:'Die Kraft von Moringa mit TREELOGY (Youthtopia)',
+                desc:'Wie eine Pflanze mehrere Probleme lösen kann — ein tolles Biomimikry-Fallbeispiel.'},
+            url:'https://youthtopia.education/courses/moringa-treelogy', badge:'All ages · free', src:'YOUTHTOPIA', local:true },
+
+          { id:'natgeo', icon:'🗺️',
+            en:{name:'National Geographic Education — resource library',
+                desc:'Free videos, interactives and articles on ecosystems, wildlife and environment.'},
+            de:{name:'National Geographic Education — Ressourcenbibliothek',
+                desc:'Kostenlose Videos, interaktive Inhalte und Artikel zu Ökosystemen, Tierwelt und Umwelt.'},
+            url:'https://education.nationalgeographic.org', badge:'All ages · explore', src:'NAT GEO EDUCATION' },
+
+          { id:'endwaste', icon:'♻️',
+            en:{name:'TED-Ed End Plastic Waste collection',
+                desc:'Curated lesson set on plastic, the ocean and what young people can do.'},
+            de:{name:'TED-Ed End Plastic Waste Sammlung',
+                desc:'Kuratiertes Lektionsset über Plastik, den Ozean und was Jugendliche tun können.'},
+            url:'https://ed.ted.com/endwaste', badge:'All ages · series', src:'TED-ED' }
+        ]
+      }
+    ]
+  },
+
+  // ── 6. PHYSICS & MATHS ────────────────────────────────────────
+  {
+    id:'physics', icon:'⚡',
+    gradient:'linear-gradient(135deg,#0EA5E9 0%,#0284C7 100%)',
+    accent:'#0284C7',
+    en:{title:'Physics & Maths', subtitle:'The science behind structures, forces and materials'},
+    de:{title:'Physik & Mathe',   subtitle:'Die Wissenschaft hinter Strukturen, Kräften und Materialien'},
+    sections:[{
+      en:'04 · Physics & Maths', de:'04 · Physik & Mathe',
+      tools:[
+        { id:'ms-physics', icon:'🔬',
+          en:{name:'Middle school physics — forces, energy, waves (Khan Academy)',
+              desc:'Interactive with practice and badges. Motion, forces, energy — the physics behind product design. NGSS-aligned.'},
+          de:{name:'Mittelschulphysik — Kräfte, Energie, Wellen (Khan Academy)',
+              desc:'Interaktiv mit Übungen und Badges. Bewegung, Kräfte, Energie — die Physik hinter Produktdesign.'},
+          url:'https://www.khanacademy.org/science/ms-physics', badge:'9–13 · self-paced', src:'KHAN ACADEMY' },
+
+        { id:'seneca-sci', icon:'🧪',
+          en:{name:'Science — biology, chemistry and physics (Seneca)',
+              desc:'Interactive practice throughout. Self-paced with mastery tracking.'},
+          de:{name:'Naturwissenschaften — Biologie, Chemie und Physik (Seneca)',
+              desc:'Durchgehend interaktive Übungen. Im eigenen Tempo mit Lernfortschrittsverfolgung.'},
+          // ✓ Long URL kept exactly as in PDF
+          url:'https://app.senecalearning.com/classroom/course/419c7523-d408-4bc7-9b96-f7f12abdacae/section/cc9ec29c-c0dd-4bb4-a6d0-fa1fe2992730/session', badge:'9–16 · self-paced', src:'SENECA' },
+
+        { id:'khan-math2', icon:'📐',
+          en:{name:'Maths — all levels, arithmetic to algebra (Khan Academy)',
+              desc:'Self-paced with progress tracking and mastery badges. Pick the right level and work up.'},
+          de:{name:'Mathe — alle Niveaus, Arithmetik bis Algebra (Khan Academy)',
+              desc:'Im eigenen Tempo mit Fortschrittsverfolgung und Mastery-Badges. Wähle dein Niveau.'},
+          // ✓ CORRECTED: standardised to www.khanacademy.org
+          url:'https://www.khanacademy.org/math', badge:'All ages · self-paced', src:'KHAN ACADEMY' },
+
+        { id:'cs50', icon:'💻',
+          en:{name:"CS50 — Harvard's introduction to computer science",
+              desc:"Problem-solving, algorithmic thinking, coding. Harvard's most popular course. For motivated 13+."},
+          de:{name:'CS50 — Harvards Einführung in die Informatik',
+              desc:'Problemlösung, algorithmisches Denken, Coding. Harvards beliebtester Kurs. Für motivierte 13+.'},
+          url:'https://pll.harvard.edu/course/cs50-introduction-computer-science', badge:'13+ · free certificate', src:'HARVARD - FREE' }
+      ]
+    }]
+  },
+
+  // ── 7. PRESENTING & STORYTELLING ─────────────────────────────
+  {
+    id:'presenting', icon:'🎤',
+    gradient:'linear-gradient(135deg,#8B5CF6 0%,#7C3AED 100%)',
+    accent:'#7C3AED',
+    en:{title:'Presenting & Storytelling', subtitle:'How to share your ideas clearly and confidently'},
+    de:{title:'Präsentieren & Storytelling', subtitle:'Wie du deine Ideen klar und selbstbewusst teilst'},
+    sections:[{
+      en:'05 · Presenting & Storytelling', de:'05 · Präsentieren & Storytelling',
+      tools:[
+        { id:'speaking101', icon:'🎙️',
+          en:{name:'Public Speaking 101 — 11-episode course (TED-Ed)',
+              desc:'Finding your idea → building a talk → presenting with confidence. Complete free series.'},
+          de:{name:'Public Speaking 101 — 11-teiliger Kurs (TED-Ed)',
+              desc:'Idee finden → Vortrag aufbauen → selbstbewusst präsentieren. Komplette kostenlose Reihe.'},
+          url:'https://ed.ted.com/ted_ed_collections/public-speaking-101', badge:'All ages · free', src:'TED-ED — FULL COURSE' },
+
+        { id:'chris-and', icon:'🌟',
+          en:{name:'Mastering public speaking — Chris Anderson (TED-Ed)',
+              desc:"TED's head curator on why storytelling is the most important skill you can learn."},
+          de:{name:'Öffentliches Sprechen meistern — Chris Anderson (TED-Ed)',
+              desc:'TEDs Hauptkurator darüber, warum Storytelling die wichtigste Fähigkeit ist.'},
+          url:'https://ed.ted.com/lessons/we-can-help-you-master-public-speaking-chris-anderson', badge:'All ages', src:'TED-ED' },
+
+        { id:'student-talks', icon:'🏆',
+          en:{name:'TED-Ed Student Talks — give your own TED Talk',
+              desc:'A structured programme to develop and deliver your own talk. FHS can apply as a school.'},
+          de:{name:'TED-Ed Student Talks — halte deinen eigenen TED Talk',
+              desc:'Ein strukturiertes Programm, um deinen eigenen Vortrag zu entwickeln und zu halten.'},
+          url:'https://ed.ted.com/student_talks', badge:'9–18', src:'TED-ED — PROGRAMME' },
+
+        { id:'speaking-m', icon:'✨',
+          en:{name:'Public Speaking Masterclass (Youthtopia)',
+              desc:'5-star rated short masterclass from a young speaker.'},
+          de:{name:'Public Speaking Masterclass (Youthtopia)',
+              desc:'Mit 5 Sternen bewertete kurze Masterclass von einer jungen Sprecherin.'},
+          url:'https://youthtopia.education/courses/public-speaking-masterclass', badge:'All ages · free', src:'YOUTHTOPIA' },
+
+        { id:'melati', icon:'🌺',
+          en:{name:'1-on-1 with Melati on Public Speaking (Youthtopia)',
+              desc:'Melati Wijsen — Bye Bye Plastic Bags founder from Bali — on how she presents.'},
+          de:{name:'1-on-1 mit Melati über Public Speaking (Youthtopia)',
+              desc:'Melati Wijsen — Gründerin von Bye Bye Plastic Bags aus Bali — über ihre Präsentationstechnik.'},
+          url:'https://youthtopia.education/courses/public-speaking-workshop', badge:'All ages · free', src:'YOUTHTOPIA', local:true },
+
+        { id:'film', icon:'🎞️',
+          en:{name:'How to Use the Power of Film to Change Mindsets (Youthtopia)',
+              desc:"Storytelling through film — good if you're documenting your project or PEP."},
+          de:{name:'Wie man die Kraft des Films nutzt, um Denkmuster zu ändern (Youthtopia)',
+              desc:'Storytelling durch Film — gut, wenn du dein Projekt oder PEP dokumentierst.'},
+          url:'https://youthtopia.education/courses/power-of-film-to-change-mindsets-with-Ema', badge:'All ages · free', src:'YOUTHTOPIA' }
+      ]
+    }]
+  },
+
+  // ── 8. PEP SUPPORT ────────────────────────────────────────────
+  {
+    id:'pep', icon:'🎯',
+    gradient:'linear-gradient(135deg,#F43F5E 0%,#E11D48 100%)',
+    accent:'#E11D48',
+    en:{title:'PEP Support', subtitle:'Resources for your Personal Exploration Project — wherever your curiosity leads'},
+    de:{title:'PEP-Unterstützung', subtitle:'Ressourcen für dein Personal Exploration Project — wohin deine Neugier dich auch führt'},
+    sections:[
+      {
+        en:'06 · Mindset & Process', de:'06 · Mindset & Prozess',
+        tools:[
+          { id:'shifters', icon:'🚀',
+            en:{name:'Step-by-Step Guide to Building Impact Projects (Youthtopia)',
+                desc:'Social Shifters programme — find a problem, build a solution, get it out there.'},
+            de:{name:'Schritt-für-Schritt-Anleitung zum Aufbau von Impact-Projekten (Youthtopia)',
+                desc:'Social Shifters Programm — ein Problem finden, eine Lösung entwickeln, es in die Welt bringen.'},
+            url:'https://youthtopia.education/courses/socialshifters', badge:'All ages · free', src:'YOUTHTOPIA' },
+
+          { id:'start-own', icon:'💡',
+            en:{name:'Starting Your Own Thing and Some Tips (Youthtopia)',
+                desc:'5-star rated. Practical talk on turning an idea into a real project.'},
+            de:{name:'Dein eigenes Ding starten und ein paar Tipps (Youthtopia)',
+                desc:'Mit 5 Sternen bewertet. Praktischer Vortrag darüber, wie man eine Idee in ein echtes Projekt verwandelt.'},
+            url:'https://youthtopia.education/courses/start-your-own-thing', badge:'All ages · free', src:'YOUTHTOPIA' },
+
+          { id:'momentum', icon:'🔥',
+            en:{name:'Gaining Momentum and How to Keep Going (Youthtopia)',
+                desc:'What to do when your project feels stuck. Practical, honest, short.'},
+            de:{name:'Momentum gewinnen und wie man dranbleibt (Youthtopia)',
+                desc:'Was zu tun ist, wenn dein Projekt feststeckt. Praktisch, ehrlich, kurz.'},
+            // ✓ NOTE: "howt" is a typo in the original PDF URL — kept exactly as published
+            url:'https://youthtopia.education/courses/gaining-momentum-and-howt-to-keep-going-with-Sophia', badge:'All ages · free', src:'YOUTHTOPIA' },
+
+          { id:'habits', icon:'⚙️',
+            en:{name:'Building Better Habits Masterclass (Youthtopia)',
+                desc:'4.9 stars from 14 reviews. Build the habits that support your PEP work.'},
+            de:{name:'Bessere Gewohnheiten aufbauen Masterclass (Youthtopia)',
+                desc:'4,9 Sterne aus 14 Bewertungen. Entwickle die Gewohnheiten, die deine PEP-Arbeit unterstützen.'},
+            url:'https://youthtopia.education/courses/building-better-habits', badge:'All ages · free', src:'YOUTHTOPIA' },
+
+          { id:'income', icon:'💰',
+            en:{name:'Income & Impact (Youthtopia)',
+                desc:'How to think about making your project financially sustainable. Real and practical.'},
+            de:{name:'Einnahmen & Wirkung (Youthtopia)',
+                desc:'Wie du darüber nachdenken kannst, dein Projekt finanziell nachhaltig zu machen. Realistisch und praktisch.'},
+            url:'https://youthtopia.education/courses/income-impact', badge:'All ages · free', src:'YOUTHTOPIA' },
+
+          { id:'images', icon:'📸',
+            en:{name:'Stories Through Images (Youthtopia)',
+                desc:'How to document your PEP project visually — photography as storytelling.'},
+            de:{name:'Geschichten durch Bilder (Youthtopia)',
+                desc:'Wie du dein PEP-Projekt visuell dokumentierst — Fotografie als Storytelling.'},
+            url:'https://youthtopia.education/courses/stories-through-images', badge:'All ages · free', src:'YOUTHTOPIA' }
+        ]
+      },
+      {
+        en:'🔭 Explore Any Topic — University Platforms', de:'🔭 Jedes Thema erkunden — Uni-Plattformen',
+        tools:[
+          { id:'harvard-cat', icon:'🏛️',
+            en:{name:'Harvard free course catalogue (100+ courses)',
+                desc:'Ancient philosophy, neuroscience, climate, justice, coding. Browse for your PEP topic. No age gate.'},
+            de:{name:'Harvards kostenloser Kurskatalog (100+ Kurse)',
+                desc:'Antike Philosophie, Neurowissenschaften, Klima, Gerechtigkeit, Coding. Für dein PEP-Thema stöbern.'},
+            url:'https://pll.harvard.edu/catalog/free', badge:'13+ · free audit', src:'HARVARD — 100+ COURSES' },
+
+          { id:'openlearn', icon:'🎓',
+            en:{name:'OpenLearn — hundreds of free short courses (Open University)',
+                desc:'Creative writing to climate science to philosophy. Digital badges on completion. UK university quality.'},
+            de:{name:'OpenLearn — Hunderte kostenloser Kurzkurse (Open University)',
+                desc:'Von kreativem Schreiben über Klimawissenschaft bis Philosophie. Digitale Badges nach Abschluss.'},
+            url:'https://www.open.edu/openlearn', badge:'13+ · free badges', src:'OPEN UNIVERSITY' },
+
+          { id:'mit-ocw', icon:'🔬',
+            en:{name:'MIT OpenCourseWare — 2,500+ university courses',
+                desc:'No enrolment, no account. Open the course and use the materials. Best for self-directed 14–16.'},
+            de:{name:'MIT OpenCourseWare — 2.500+ Uni-Kurse',
+                desc:'Keine Anmeldung, kein Konto. Kurs öffnen und Materialien nutzen. Am besten für selbstgesteuerte 14–16.'},
+            url:'https://ocw.mit.edu', badge:'14+ · open access', src:'MIT — OPEN ACCESS' },
+
+          { id:'teded-design', icon:'⚙️',
+            en:{name:'TED-Ed design, engineering & technology lessons',
+                desc:'Browse hundreds of animated lessons to find something that connects to your PEP inquiry.'},
+            de:{name:'TED-Ed Design, Engineering & Technologie Lektionen',
+                desc:'Hunderte animierte Lektionen durchsuchen, um etwas zu finden, das mit deinem PEP-Thema verbunden ist.'},
+            url:'https://ed.ted.com/lessons?category=design-engineering-technology', badge:'All ages · browse', src:'TED-ED' }
+        ]
+      }
+    ]
+  },
+
+  // ── 9. PAID & CERTIFIED OCEAN COURSES ────────────────────────
+  {
+    id:'paid', icon:'🐠',
+    gradient:'linear-gradient(135deg,#1D4ED8 0%,#1E3A5F 100%)',
+    accent:'#1D4ED8',
+    en:{title:'Paid & Certified — Bali Ocean Courses',
+        subtitle:'SSI-certified courses by the Coral Triangle Center. Online Zoom classes, open to divers and non-divers. All proceeds support CTC conservation projects.'},
+    de:{title:'Kostenpflichtig & Zertifiziert — Bali Ozean-Kurse',
+        subtitle:'SSI-zertifizierte Kurse vom Coral Triangle Center. Online Zoom-Klassen, offen für Taucher und Nicht-Taucher. Alle Erlöse unterstützen die Schutzprojekte des CTC.'},
+    sections:[{
+      en:'IDR 1.5 million / USD 150 per person · Special price for all 3 courses · Register: bit.ly/cdsonlinectc',
+      de:'IDR 1,5 Mio. / USD 150 pro Person · Sonderpreis für alle 3 Kurse · Anmeldung: bit.ly/cdsonlinectc',
+      tools:[
+        { id:'marine-eco', icon:'🐙',
+          en:{name:'Marine Ecology — April 9, 2026',
+              desc:'13:00–17:00 Bali time. 4-hour Zoom + exam. SSI Certification. Contact Farhan: +62 81138 302040 | centerbooking@coraltrianglecenter.org'},
+          de:{name:'Meeresökologie — 9. April 2026',
+              desc:'13:00–17:00 Bali-Zeit. 4-stündiges Zoom + Prüfung. SSI-Zertifizierung. Kontakt Farhan: +62 81138 302040'},
+          url:'https://bit.ly/cdsonlinectc', badge:'SSI Certified · PAID', src:'CORAL TRIANGLE CENTER', paid:true },
+
+        { id:'coral-id', icon:'🪸',
+          en:{name:'Coral Identification — April 10, 2026',
+              desc:'08:00–10:00 Bali time. 2-hour Zoom + exam. SSI Certification. Includes Coral Diving School merchandise (excl. shipping).'},
+          de:{name:'Korallenbestimmung — 10. April 2026',
+              desc:'08:00–10:00 Bali-Zeit. 2-stündiges Zoom + Prüfung. SSI-Zertifizierung. Inkl. Coral Diving School Merchandise.'},
+          url:'https://bit.ly/cdsonlinectc', badge:'SSI Certified · PAID', src:'CORAL TRIANGLE CENTER', paid:true },
+
+        { id:'fish-id', icon:'🐟',
+          en:{name:'Fish Identification — April 10, 2026',
+              desc:'10:00–12:00 Bali time. 2-hour Zoom + exam. SSI Certification. Special price available for all 3 courses together.'},
+          de:{name:'Fischbestimmung — 10. April 2026',
+              desc:'10:00–12:00 Bali-Zeit. 2-stündiges Zoom + Prüfung. SSI-Zertifizierung. Sonderpreis für alle 3 Kurse zusammen.'},
+          url:'https://bit.ly/cdsonlinectc', badge:'SSI Certified · PAID', src:'CORAL TRIANGLE CENTER', paid:true }
+      ]
+    }]
+  }
+
+]; // end CATS
+
 // ═══════════════════════════════════════════════════════════════
-// DATA — All content extracted from FHS Term 4 Learning Resources PDF
+// STATE
 // ═══════════════════════════════════════════════════════════════
-const DATA = {
-  lang: 'en',
-
-  categories: [
-
-    // ── 1. MATHS ──────────────────────────────────────────────
-    {
-      id: 'maths',
-      icon: '🧮',
-      bg: 'bg-amber-400',
-      gradient: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
-      titleEN: 'Maths', titleDE: 'Mathe',
-      subtitleEN: 'Games, practice, AI tutoring and printable workbooks — all free, ages 9–16',
-      subtitleDE: 'Spiele, Übungen, KI-Nachhilfe und Arbeitshefte — alles kostenlos, 9–16 Jahre',
-      sections: [
-        {
-          titleEN: 'Tools & Practice', titleDE: 'Werkzeuge & Übungen',
-          tools: [
-            { id: 'seneca-m', icon: '🚀',
-              nameEN: 'Seneca Learning — adaptive maths revision',
-              nameDE: 'Seneca Learning — adaptives Mathe-Training',
-              descEN: 'Free course-based revision across maths topics. Adaptive — gets harder as you improve. Works well for 11–16.',
-              descDE: 'Kostenlose kursbasierte Wiederholung. Passt sich an — wird schwieriger, wenn du besser wirst. Ideal für 11–16.',
-              url: 'https://senecalearning.com', badge: '11–16 · free', source: 'SENECA' },
-            { id: 'khan-m', icon: '🎓',
-              nameEN: 'Khan Academy — all levels, arithmetic to algebra',
-              nameDE: 'Khan Academy — alle Niveaus, Arithmetik bis Algebra',
-              descEN: 'Self-paced with videos, practice exercises and progress tracking. Best structured free maths resource online.',
-              descDE: 'Im eigenen Tempo mit Videos, Übungen und Fortschrittsverfolgung. Die beste kostenlose Mathe-Ressource online.',
-              url: 'https://khanacademy.org/math', badge: 'All ages · free', source: 'KHAN ACADEMY' },
-            { id: 'whiterose', icon: '📝',
-              nameEN: 'White Rose Maths — free lessons and worksheets',
-              nameDE: 'White Rose Maths — kostenlose Lektionen und Arbeitsblätter',
-              descEN: 'Structured schemes of work, free lesson videos and worksheets. UK curriculum-aligned, trusted by schools.',
-              descDE: 'Strukturierte Lehrpläne, kostenlose Unterrichtsvideos und Arbeitsblätter. Am britischen Lehrplan orientiert.',
-              url: 'https://whiteroseeducation.com', badge: 'All ages · free', source: 'WHITE ROSE MATHS' },
-            { id: 'schoolai', icon: '🤖',
-              nameEN: 'School.AI — AI maths tutor (see Jak for login)',
-              nameDE: 'School.AI — KI-Mathetutor (Login bei Jak)',
-              descEN: 'AI-powered personalised tutoring. Students get hints, explanations and worked examples. Jak has school logins.',
-              descDE: 'KI-gestützte personalisierte Nachhilfe. Schüler bekommen Tipps, Erklärungen und vorgerechnete Beispiele.',
-              url: 'https://schoolai.com', badge: 'All ages · school login', source: 'SCHOOL.AI' },
-            { id: 'ttrockstars', icon: '🎮',
-              nameEN: 'TT Rockstars & Prodigy — maths games (see Jak)',
-              nameDE: 'TT Rockstars & Prodigy — Mathe-Spiele (Login bei Jak)',
-              descEN: 'Times tables and number fluency games. Competitive and genuinely fun. School login required — see Jak.',
-              descDE: 'Einmaleins und Zahlenflüssigkeits-Spiele. Wettbewerbsorientiert und wirklich spaßig.',
-              url: 'https://ttrockstars.com', badge: '9–14 · school login', source: 'TT ROCKSTARS / PRODIGY' },
-            { id: 'codeorg', icon: '💻',
-              nameEN: 'Code.org + Good & Beautiful printable books',
-              nameDE: 'Code.org + Good & Beautiful Arbeitshefte',
-              descEN: 'Code.org: free coding courses (see Jak for login). Good & Beautiful: free printable maths workbooks, all levels.',
-              descDE: 'Code.org: kostenlose Coding-Kurse. Good & Beautiful: kostenlose ausdruckbare Mathe-Arbeitshefte für alle Niveaus.',
-              url: 'https://code.org', badge: 'All ages · free', source: 'CODE.ORG / GOOD & BEAUTIFUL',
-              urlB: 'https://goodandbeautiful.com/pages/free-homeschool-math-curriculum', labelB: 'Good & Beautiful →' }
-          ]
-        }
-      ]
-    },
-
-    // ── 2. READING & WRITING ──────────────────────────────────
-    {
-      id: 'reading',
-      icon: '✍️',
-      bg: 'bg-orange-500',
-      gradient: 'linear-gradient(135deg, #F97316 0%, #EA580C 100%)',
-      titleEN: 'Reading & Writing', titleDE: 'Lesen & Schreiben',
-      subtitleEN: 'Comprehension, creative writing, independent reading — all free, ages 9–16',
-      subtitleDE: 'Textverständnis, kreatives Schreiben, selbständiges Lesen — kostenlos, 9–16 Jahre',
-      sections: [
-        {
-          titleEN: 'Tools & Resources', titleDE: 'Werkzeuge & Ressourcen',
-          tools: [
-            { id: 'pobble', icon: '✏️',
-              nameEN: 'Pobble — creative writing community',
-              nameDE: 'Pobble — Community für kreatives Schreiben',
-              descEN: 'Students publish their writing to a real global audience. Prompts, moderated community, high-quality examples.',
-              descDE: 'Schüler veröffentlichen ihre Texte für ein echtes weltweites Publikum. Schreibimpulse, moderierte Community.',
-              url: 'https://www.pobble.com', badge: 'All ages · free', source: 'POBBLE' },
-            { id: 'reading-realm', icon: '📚',
-              nameEN: 'The Reading Realm — reading resources',
-              nameDE: 'The Reading Realm — Lese-Ressourcen',
-              descEN: 'Beautifully made free reading resources, book recommendations and comprehension activities for 9–16.',
-              descDE: 'Wunderschön gestaltete kostenlose Lesematerialien, Buchempfehlungen und Verständnisaufgaben für 9–16.',
-              url: 'https://thereadingrealm.co.uk', badge: '9–16 · free', source: 'THE READING REALM' },
-            { id: 'seneca-eng', icon: '🔤',
-              nameEN: 'Seneca — English language & literature',
-              nameDE: 'Seneca — Englische Sprache & Literatur',
-              descEN: 'Free English revision courses covering reading, comprehension and writing techniques. Same platform as maths.',
-              descDE: 'Kostenlose Englisch-Wiederholungskurse zu Lesen, Textverständnis und Schreibtechniken. Gleiche Plattform wie Mathe.',
-              url: 'https://senecalearning.com', badge: '11–16 · free', source: 'SENECA' },
-            { id: 'commonlit', icon: '📖',
-              nameEN: 'CommonLit — real texts with discussion questions',
-              nameDE: 'CommonLit — echte Texte mit Diskussionsfragen',
-              descEN: 'High-quality fiction and non-fiction with guided reading questions. Excellent for developing critical thinking.',
-              descDE: 'Hochwertige Belletristik und Sachbücher mit geleiteten Lesefragen. Ausgezeichnet für kritisches Denken.',
-              url: 'https://commonlit.org', badge: '10–16 · free', source: 'COMMONLIT' },
-            { id: 'ncw', icon: '🖊️',
-              nameEN: 'National Centre for Writing — free creative writing courses',
-              nameDE: 'National Centre for Writing — kostenlose Kreativschreib-Kurse',
-              descEN: 'Self-paced courses on poetry, character, storytelling. UK-based, proper quality. Perfect PEP support.',
-              descDE: 'Selbst gesteuerte Kurse zu Poesie, Figuren, Storytelling. UK-basiert, echte Qualität. Perfekte PEP-Unterstützung.',
-              url: 'https://nationalcentreforwriting.org.uk/get-involved/young-people', badge: 'All ages · free', source: 'NATIONAL CENTRE FOR WRITING' },
-            { id: 'readworks', icon: '📰',
-              nameEN: 'ReadWorks & Newsela — reading comprehension',
-              nameDE: 'ReadWorks & Newsela — Leseverständnis',
-              descEN: 'ReadWorks: free non-fiction passages + questions. Newsela: current news at adjustable reading levels.',
-              descDE: 'ReadWorks: kostenlose Sachtexte + Fragen. Newsela: aktuelle Nachrichten auf anpassbaren Lesestufen.',
-              url: 'https://www.readworks.org', badge: '9–16 · free', source: 'READWORKS / NEWSELA',
-              urlB: 'https://newsela.com', labelB: 'Newsela →' }
-          ]
-        }
-      ]
-    },
-
-    // ── 3. BIOMIMICRY & NATURE ────────────────────────────────
-    {
-      id: 'biomimicry',
-      icon: '🌿',
-      bg: 'bg-green-500',
-      gradient: 'linear-gradient(135deg, #22C55E 0%, #16A34A 100%)',
-      titleEN: 'Biomimicry & Nature', titleDE: 'Biomimikry & Natur',
-      subtitleEN: 'Learn how nature solves design problems — and how we can copy it',
-      subtitleDE: 'Lerne, wie die Natur Designprobleme löst — und wie wir das kopieren können',
-      sections: [
-        {
-          titleEN: '01 · Biomimicry & Nature', titleDE: '01 · Biomimikry & Natur',
-          tools: [
-            { id: 'teded-bio', icon: '🎬',
-              nameEN: 'Biomimicry: technology inspired by nature (TED-Ed)',
-              nameDE: 'Biomimikry: Technik, inspiriert von der Natur (TED-Ed)',
-              descEN: 'Short animated lessons with quiz — explore the topic. All ages, 8 min.',
-              descDE: 'Kurze animierte Lektionen mit Quiz — erkunde das Thema. Für alle, 8 Min.',
-              url: 'https://ed.ted.com/search#query=biomimicry', badge: 'All ages · 8 min', source: 'TED-ED' },
-            { id: 'janine', icon: '🎤',
-              nameEN: 'Biomimicry in action — Janine Benyus (TED Talk)',
-              nameDE: 'Biomimikry in Aktion — Janine Benyus (TED Talk)',
-              descEN: 'The original talk — velcro, sharkskin, termite towers. Nature as the design brief.',
-              descDE: 'Der Originalvortrag — Klettverschluss, Haifischhaut, Termitentürme. Die Natur als Design-Briefing.',
-              url: 'https://ted.com/talks/janine_benyus_biomimicry_in_action', badge: '12+ · free', source: 'TED TALK' },
-            { id: 'spider', icon: '🕷️',
-              nameEN: 'The magnificence of spider silk — Cheryl Hayashi',
-              nameDE: 'Die Großartigkeit der Spinnenseide — Cheryl Hayashi',
-              descEN: 'How spiders make 7 types of silk and what we can learn to make from it.',
-              descDE: 'Wie Spinnen 7 Arten von Seide herstellen und was wir daraus machen können.',
-              url: 'https://ted.com/talks/cheryl_hayashi_the_magnificence_of_spider_silk', badge: '11+ · free', source: 'TED TALK' },
-            { id: 'raina', icon: '🌱',
-              nameEN: 'Biomimicry: designs inspired by nature — Raina Chaurasia',
-              nameDE: 'Biomimikry: von der Natur inspirierte Designs — Raina Chaurasia',
-              descEN: 'A young speaker on this exact topic. Great PEP inspiration.',
-              descDE: 'Eine junge Sprecherin genau zu diesem Thema. Tolle PEP-Inspiration.',
-              url: 'https://ted.com/talks/raina_chaurasia_biomimicry_designs_inspired_by_nature', badge: '9+ · free', source: 'TED TALK — YOUTH SPEAKER' },
-            { id: 'asknature', icon: '🔍',
-              nameEN: "AskNature.org — search nature's solutions",
-              nameDE: "AskNature.org — Lösungen der Natur durchsuchen",
-              descEN: "Search 'waterproof', 'flexible', 'strong' — see how nature already solved it.",
-              descDE: "Suche nach 'wasserdicht', 'flexibel', 'stark' — und sieh, wie die Natur es schon gelöst hat.",
-              url: 'https://asknature.org', badge: 'All ages · explore', source: 'BIOMIMICRY INSTITUTE' },
-            { id: 'permaculture', icon: '🌾',
-              nameEN: 'Permaculture Masterclass (Youthtopia)',
-              nameDE: 'Permakultur-Masterclass (Youthtopia)',
-              descEN: 'Designing systems that work with nature — directly relevant to Bali.',
-              descDE: 'Systeme entwerfen, die mit der Natur arbeiten — direkt relevant für Bali.',
-              url: 'https://youthtopia.education/courses/permaculture-masterclass', badge: 'All ages · free', source: 'YOUTHTOPIA' }
-          ]
-        }
-      ]
-    },
-
-    // ── 4. DESIGN THINKING ────────────────────────────────────
-    {
-      id: 'design',
-      icon: '🛠️',
-      bg: 'bg-teal-500',
-      gradient: 'linear-gradient(135deg, #14B8A6 0%, #0D9488 100%)',
-      titleEN: 'Design Thinking & Making', titleDE: 'Design Thinking & Umsetzen',
-      subtitleEN: 'Define a problem, generate ideas, prototype and test',
-      subtitleDE: 'Ein Problem definieren, Ideen entwickeln, Prototypen bauen und testen',
-      sections: [
-        {
-          titleEN: '02 · Design Thinking & Making', titleDE: '02 · Design Thinking & Umsetzen',
-          tools: [
-            { id: 'stanford', icon: '🏛️',
-              nameEN: 'Stanford design thinking process (TED-Ed)',
-              nameDE: 'Stanford Design-Thinking-Prozess (TED-Ed)',
-              descEN: 'Define → Ideate → Prototype → Test. A 5-step framework with quiz.',
-              descDE: 'Definieren → Ideen → Prototyp → Test. Ein 5-Schritte-Rahmen mit Quiz.',
-              url: 'https://ed.ted.com/on/o57WihZH', badge: '11+', source: 'TED-ED' },
-            { id: 'launch', icon: '🚀',
-              nameEN: 'The LAUNCH cycle — design thinking for students',
-              nameDE: 'Der LAUNCH-Zyklus — Design Thinking für Schüler',
-              descEN: 'A student-friendly version of human-centred design. Do this before prototyping.',
-              descDE: 'Eine schülerfreundliche Version des menschenzentrierten Designs. Mach das vor dem Prototyping.',
-              url: 'https://ed.ted.com/on/LMpd22xR', badge: '9+', source: 'TED-ED' },
-            { id: 'pawlyn', icon: '🏗️',
-              nameEN: "Using nature's genius in architecture — Michael Pawlyn",
-              nameDE: "Die Genialität der Natur in der Architektur — Michael Pawlyn",
-              descEN: 'Radical resource efficiency, closed loops, solar energy — biomimicry meets architecture.',
-              descDE: 'Radikale Ressourceneffizienz, geschlossene Kreisläufe, Solarenergie — Biomimikry trifft Architektur.',
-              url: 'https://ted.com/talks/michael_pawlyn_using_nature_s_genius_in_architecture', badge: '9+', source: 'TED TALK' },
-            { id: 'pixar', icon: '🎥',
-              nameEN: 'Pixar in a Box — design through storytelling (Khan Academy)',
-              nameDE: 'Pixar in a Box — Design durch Storytelling (Khan Academy)',
-              descEN: 'How Pixar uses maths, physics and story. Interactive and genuinely brilliant.',
-              descDE: 'Wie Pixar Mathe, Physik und Storytelling nutzt. Interaktiv und wirklich brillant.',
-              url: 'https://khanacademy.org/computing/pixar', badge: 'All ages', source: 'KHAN ACADEMY' },
-            { id: 'critical', icon: '🧠',
-              nameEN: '5 tips to improve your critical thinking (TED-Ed)',
-              nameDE: '5 Tipps zur Verbesserung deines kritischen Denkens (TED-Ed)',
-              descEN: 'A 5-step framework for tackling any design or research problem — with quiz.',
-              descDE: 'Ein 5-Schritte-Rahmen für jedes Design- oder Forschungsproblem — mit Quiz.',
-              url: 'https://ed.ted.com/lessons/5-tips-to-improve-your-critical-thinking-samantha-agoos', badge: 'All ages · free', source: 'TED-ED' },
-            { id: 'packaging', icon: '📦',
-              nameEN: 'Rethinking and Redesigning Packaging Masterclass (Youthtopia)',
-              nameDE: 'Verpackungen neu denken und gestalten — Masterclass (Youthtopia)',
-              descEN: 'A masterclass on sustainable product design — exactly on theme for this term.',
-              descDE: 'Eine Masterclass über nachhaltiges Produktdesign — genau das Thema dieses Terms.',
-              url: 'https://youthtopia.education/courses/rethinking-and-redesigning-packaging', badge: '13+', source: 'YOUTHTOPIA' }
-          ]
-        }
-      ]
-    },
-
-    // ── 5. SUSTAINABILITY & SDGs ──────────────────────────────
-    {
-      id: 'sustainability',
-      icon: '🌍',
-      bg: 'bg-lime-500',
-      gradient: 'linear-gradient(135deg, #84CC16 0%, #65A30D 100%)',
-      titleEN: 'Sustainability & the SDGs', titleDE: 'Nachhaltigkeit & die SDGs',
-      subtitleEN: 'Understanding why it matters and what we can do',
-      subtitleDE: 'Verstehen, warum es wichtig ist und was wir tun können',
-      sections: [
-        {
-          titleEN: '03 · Sustainability & the SDGs', titleDE: '03 · Nachhaltigkeit & die SDGs',
-          tools: [
-            { id: 'earthschool', icon: '🌏',
-              nameEN: 'Earth School — 30-lesson climate programme (TED-Ed)',
-              nameDE: 'Earth School — 30-Lektionen Klimaprogramm (TED-Ed)',
-              descEN: 'Complete 30 lessons → earn a certificate. Covers energy, food, oceans, activism.',
-              descDE: '30 Lektionen abschließen → Zertifikat erhalten. Themen: Energie, Ernährung, Ozeane, Aktivismus.',
-              url: 'https://ed.ted.com/earth-school', badge: '11+ · certificate', source: 'TED-ED CERTIFICATE' },
-            { id: 'circular', icon: '♻️',
-              nameEN: 'The circular economy — re-thinking progress (TED-Ed)',
-              nameDE: 'Die Kreislaufwirtschaft — Fortschritt neu denken (TED-Ed)',
-              descEN: 'How we redesign manufacturing so products are made to be made again.',
-              descDE: 'Wie wir die Fertigung neu gestalten, damit Produkte zum Wiederherstellen gemacht werden.',
-              url: 'https://ed.ted.com/best_of_web/2Yy019iv', badge: '11+', source: 'TED-ED' },
-            { id: 'plastics', icon: '🧴',
-              nameEN: 'Can the circular economy solve our plastics problem? (TED-Ed)',
-              nameDE: 'Kann die Kreislaufwirtschaft unser Plastikproblem lösen? (TED-Ed)',
-              descEN: 'Directly relevant to what students see every day in Bali.',
-              descDE: 'Direkt relevant für das, was Schüler täglich auf Bali sehen.',
-              url: 'https://ed.ted.com/best_of_web/can-the-circular-economy-solve-our-plastics-problem', badge: '9+', source: 'TED-ED' },
-            { id: 'sdg-crash', icon: '🎯',
-              nameEN: 'SDG crash course (Youthtopia)',
-              nameDE: 'SDG-Crashkurs (Youthtopia)',
-              descEN: '5-star rated. Best free intro to all 17 SDGs — essential background for this term.',
-              descDE: 'Mit 5 Sternen bewertet. Beste kostenlose Einführung in alle 17 SDGs.',
-              url: 'https://youthtopia.education/courses/sustainable-development-goals-crash-course', badge: 'All ages · free', source: 'YOUTHTOPIA' },
-            { id: 'sustain-master', icon: '🌱',
-              nameEN: 'Sustainability masterclass (Youthtopia)',
-              nameDE: 'Nachhaltigkeits-Masterclass (Youthtopia)',
-              descEN: 'A clear overview of what sustainability actually means in practice. SDGs, real-world case studies.',
-              descDE: 'Ein klarer Überblick darüber, was Nachhaltigkeit in der Praxis bedeutet. SDGs, Fallstudien.',
-              url: 'https://youthtopia.education/courses/the-basics-of-sustainability-masterclass', badge: 'All ages · free', source: 'YOUTHTOPIA' },
-            { id: 'harvard-infra', icon: '🏙️',
-              nameEN: 'Sustainable Infrastructure — Harvard',
-              nameDE: 'Nachhaltige Infrastruktur — Harvard',
-              descEN: 'SDGs, real-world case studies, what makes a project sustainable. Best for 14+.',
-              descDE: 'SDGs, reale Fallstudien, was ein Projekt nachhaltig macht. Am besten für 14+.',
-              url: 'https://pll.harvard.edu/course/sustainable-infrastructure', badge: '14+ · free', source: 'HARVARD' }
-          ]
-        },
-        {
-          titleEN: '🌴 Bali & Indonesia — Local Context', titleDE: '🌴 Bali & Indonesien — Lokaler Kontext',
-          tools: [
-            { id: 'kembali', icon: '🌳',
-              nameEN: 'Kembali Ke Hutan — returning to the forest (Youthtopia)',
-              nameDE: 'Kembali Ke Hutan — Zurück in den Wald (Youthtopia)',
-              descEN: 'An Indonesian course about returning to the forest — produced locally, in Bahasa.',
-              descDE: 'Ein indonesischer Kurs über die Rückkehr in den Wald — lokal produziert, auf Bahasa.',
-              url: 'https://youthtopia.education/courses/kembali-ke-hutan', badge: 'All ages · free', source: 'YOUTHTOPIA', localBadge: 'BALI LOCAL' },
-            { id: 'turtle', icon: '🐢',
-              nameEN: 'Turtle Conservation (Youthtopia)',
-              nameDE: 'Schildkrötenschutz (Youthtopia)',
-              descEN: 'Sea turtle conservation — a real ongoing challenge in Bali.',
-              descDE: 'Meeresschildkrötenschutz — eine echte, laufende Herausforderung auf Bali.',
-              url: 'https://youthtopia.education/courses/turtle-conservation', badge: 'All ages · free', source: 'YOUTHTOPIA', localBadge: 'BALI LOCAL' },
-            { id: 'ocean-plastic', icon: '🌊',
-              nameEN: 'Ocean Plastic Pollution Masterclass (Youthtopia)',
-              nameDE: 'Meeresplastikverschmutzung Masterclass (Youthtopia)',
-              descEN: '5-star rated. The scale of ocean plastic and what\'s being done about it.',
-              descDE: 'Mit 5 Sternen bewertet. Das Ausmaß von Meeresplastik und was dagegen getan wird.',
-              url: 'https://youthtopia.education/courses/ocean-plastic-pollution', badge: 'All ages · free', source: 'YOUTHTOPIA', localBadge: 'BALI LOCAL' },
-            { id: 'moringa', icon: '🍃',
-              nameEN: 'The Power of Moringa with TREELOGY (Youthtopia)',
-              nameDE: 'Die Kraft von Moringa mit TREELOGY (Youthtopia)',
-              descEN: 'How one plant can solve multiple problems — a great biomimicry case study.',
-              descDE: 'Wie eine Pflanze mehrere Probleme lösen kann — ein tolles Biomimikry-Fallbeispiel.',
-              url: 'https://youthtopia.education/courses/moringa-treelogy', badge: 'All ages · free', source: 'YOUTHTOPIA', localBadge: 'BALI LOCAL' },
-            { id: 'natgeo', icon: '🗺️',
-              nameEN: 'National Geographic Education — resource library',
-              nameDE: 'National Geographic Education — Ressourcenbibliothek',
-              descEN: 'Free videos, interactives and articles on ecosystems, wildlife and environment.',
-              descDE: 'Kostenlose Videos, interaktive Inhalte und Artikel zu Ökosystemen, Tierwelt und Umwelt.',
-              url: 'https://education.nationalgeographic.org', badge: 'All ages · explore', source: 'NAT GEO EDUCATION' },
-            { id: 'endwaste', icon: '♻️',
-              nameEN: 'TED-Ed End Plastic Waste collection',
-              nameDE: 'TED-Ed End Plastic Waste Sammlung',
-              descEN: 'Curated lesson set on plastic, the ocean and what young people can do.',
-              descDE: 'Kuratiertes Lektionsset über Plastik, den Ozean und was Jugendliche tun können.',
-              url: 'https://ed.ted.com/endwaste', badge: 'All ages · series', source: 'TED-ED' }
-          ]
-        }
-      ]
-    },
-
-    // ── 6. PHYSICS & MATHS ────────────────────────────────────
-    {
-      id: 'physics',
-      icon: '⚡',
-      bg: 'bg-sky-500',
-      gradient: 'linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%)',
-      titleEN: 'Physics & Maths', titleDE: 'Physik & Mathe',
-      subtitleEN: 'The science behind structures, forces and materials',
-      subtitleDE: 'Die Wissenschaft hinter Strukturen, Kräften und Materialien',
-      sections: [
-        {
-          titleEN: '04 · Physics & Maths', titleDE: '04 · Physik & Mathe',
-          tools: [
-            { id: 'ms-physics', icon: '🔬',
-              nameEN: 'Middle school physics — forces, energy, waves (Khan Academy)',
-              nameDE: 'Mittelschulphysik — Kräfte, Energie, Wellen (Khan Academy)',
-              descEN: 'Interactive with practice and badges. Motion, forces, energy — the physics behind product design. NGSS-aligned.',
-              descDE: 'Interaktiv mit Übungen und Badges. Bewegung, Kräfte, Energie — die Physik hinter Produktdesign.',
-              url: 'https://www.khanacademy.org/science/ms-physics', badge: '9–13 · self-paced', source: 'KHAN ACADEMY' },
-            { id: 'seneca-sci', icon: '🧪',
-              nameEN: 'Science — biology, chemistry and physics (Seneca)',
-              nameDE: 'Naturwissenschaften — Biologie, Chemie und Physik (Seneca)',
-              descEN: 'Interactive practice throughout. Self-paced with mastery tracking.',
-              descDE: 'Durchgehend interaktive Übungen. Im eigenen Tempo mit Lernfortschrittsverfolgung.',
-              url: 'https://app.senecalearning.com/classroom/course/419c7523-d408-4bc7-9b96-f7f12abdacae/section/cc9ec29c-c0dd-4bb4-a6d0-fa1fe2992730/session', badge: '9–16 · self-paced', source: 'SENECA' },
-            { id: 'khan-math2', icon: '📐',
-              nameEN: 'Maths — all levels, arithmetic to algebra (Khan Academy)',
-              nameDE: 'Mathe — alle Niveaus, Arithmetik bis Algebra (Khan Academy)',
-              descEN: 'Self-paced with progress tracking and mastery badges. Pick the right level and work up.',
-              descDE: 'Im eigenen Tempo mit Fortschrittsverfolgung und Mastery-Badges. Wähle dein Niveau.',
-              url: 'https://khanacademy.org/math', badge: 'All ages · self-paced', source: 'KHAN ACADEMY' },
-            { id: 'cs50', icon: '💻',
-              nameEN: 'CS50 — Harvard\'s introduction to computer science',
-              nameDE: 'CS50 — Harvards Einführung in die Informatik',
-              descEN: 'Problem-solving, algorithmic thinking, coding. Harvard\'s most popular course. For motivated 13+.',
-              descDE: 'Problemlösung, algorithmisches Denken, Coding. Harvards beliebtester Kurs. Für motivierte 13+.',
-              url: 'https://pll.harvard.edu/course/cs50-introduction-computer-science', badge: '13+ · free certificate', source: 'HARVARD - FREE' }
-          ]
-        }
-      ]
-    },
-
-    // ── 7. PRESENTING & STORYTELLING ──────────────────────────
-    {
-      id: 'presenting',
-      icon: '🎤',
-      bg: 'bg-violet-500',
-      gradient: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%)',
-      titleEN: 'Presenting & Storytelling', titleDE: 'Präsentieren & Storytelling',
-      subtitleEN: 'How to share your ideas clearly and confidently',
-      subtitleDE: 'Wie du deine Ideen klar und selbstbewusst teilst',
-      sections: [
-        {
-          titleEN: '05 · Presenting & Storytelling', titleDE: '05 · Präsentieren & Storytelling',
-          tools: [
-            { id: 'speaking101', icon: '🎙️',
-              nameEN: 'Public Speaking 101 — 11-episode course (TED-Ed)',
-              nameDE: 'Public Speaking 101 — 11-teiliger Kurs (TED-Ed)',
-              descEN: 'Finding your idea → building a talk → presenting with confidence. Complete free series.',
-              descDE: 'Idee finden → Vortrag aufbauen → selbstbewusst präsentieren. Komplette kostenlose Reihe.',
-              url: 'https://ed.ted.com/ted_ed_collections/public-speaking-101', badge: 'All ages · free', source: 'TED-ED — FULL COURSE' },
-            { id: 'chris-anderson', icon: '🌟',
-              nameEN: 'Mastering public speaking — Chris Anderson (TED-Ed)',
-              nameDE: 'Öffentliches Sprechen meistern — Chris Anderson (TED-Ed)',
-              descEN: "TED's head curator on why storytelling is the most important skill you can learn.",
-              descDE: 'TEDs Hauptkurator darüber, warum Storytelling die wichtigste Fähigkeit ist, die du lernen kannst.',
-              url: 'https://ed.ted.com/lessons/we-can-help-you-master-public-speaking-chris-anderson', badge: 'All ages', source: 'TED-ED' },
-            { id: 'student-talks', icon: '🏆',
-              nameEN: 'TED-Ed Student Talks — give your own TED Talk',
-              nameDE: 'TED-Ed Student Talks — halte deinen eigenen TED Talk',
-              descEN: 'A structured programme to develop and deliver your own talk. FHS can apply as a school.',
-              descDE: 'Ein strukturiertes Programm, um deinen eigenen Vortrag zu entwickeln und zu halten.',
-              url: 'https://ed.ted.com/student_talks', badge: '9–18', source: 'TED-ED — PROGRAMME' },
-            { id: 'speaking-master', icon: '✨',
-              nameEN: 'Public Speaking Masterclass (Youthtopia)',
-              nameDE: 'Public Speaking Masterclass (Youthtopia)',
-              descEN: '5-star rated short masterclass from a young speaker.',
-              descDE: 'Mit 5 Sternen bewertete kurze Masterclass von einer jungen Sprecherin.',
-              url: 'https://youthtopia.education/courses/public-speaking-masterclass', badge: 'All ages · free', source: 'YOUTHTOPIA' },
-            { id: 'melati', icon: '🌺',
-              nameEN: '1-on-1 with Melati on Public Speaking (Youthtopia)',
-              nameDE: '1-on-1 mit Melati über Public Speaking (Youthtopia)',
-              descEN: 'Melati Wijsen — Bye Bye Plastic Bags founder from Bali — on how she presents.',
-              descDE: 'Melati Wijsen — Gründerin von Bye Bye Plastic Bags aus Bali — über ihre Präsentationstechnik.',
-              url: 'https://youthtopia.education/courses/public-speaking-workshop', badge: 'All ages · free', source: 'YOUTHTOPIA', localBadge: 'BALI LOCAL' },
-            { id: 'film', icon: '🎞️',
-              nameEN: 'How to Use the Power of Film to Change Mindsets (Youthtopia)',
-              nameDE: 'Wie man die Kraft des Films nutzt, um Denkmuster zu ändern (Youthtopia)',
-              descEN: "Storytelling through film — good if you're documenting your project or PEP.",
-              descDE: 'Storytelling durch Film — gut, wenn du dein Projekt oder PEP dokumentierst.',
-              url: 'https://youthtopia.education/courses/power-of-film-to-change-mindsets-with-Ema', badge: 'All ages · free', source: 'YOUTHTOPIA' }
-          ]
-        }
-      ]
-    },
-
-    // ── 8. PEP SUPPORT ────────────────────────────────────────
-    {
-      id: 'pep',
-      icon: '🎯',
-      bg: 'bg-rose-500',
-      gradient: 'linear-gradient(135deg, #F43F5E 0%, #E11D48 100%)',
-      titleEN: 'PEP Support', titleDE: 'PEP-Unterstützung',
-      subtitleEN: 'Resources for your Personal Exploration Project — wherever your curiosity leads',
-      subtitleDE: 'Ressourcen für dein Personal Exploration Project — wohin deine Neugier dich auch führt',
-      sections: [
-        {
-          titleEN: '06 · Mindset & Process', titleDE: '06 · Mindset & Prozess',
-          tools: [
-            { id: 'social-shifters', icon: '🚀',
-              nameEN: 'Step-by-Step Guide to Building Impact Projects (Youthtopia)',
-              nameDE: 'Schritt-für-Schritt-Anleitung zum Aufbau von Impact-Projekten (Youthtopia)',
-              descEN: 'Social Shifters programme — find a problem, build a solution, get it out there.',
-              descDE: 'Social Shifters Programm — ein Problem finden, eine Lösung entwickeln, es in die Welt bringen.',
-              url: 'https://youthtopia.education/courses/socialshifters', badge: 'All ages · free', source: 'YOUTHTOPIA' },
-            { id: 'start-own', icon: '💡',
-              nameEN: 'Starting Your Own Thing and Some Tips (Youthtopia)',
-              nameDE: 'Dein eigenes Ding starten und ein paar Tipps (Youthtopia)',
-              descEN: '5-star rated. Practical talk on turning an idea into a real project.',
-              descDE: 'Mit 5 Sternen bewertet. Praktischer Vortrag darüber, wie man eine Idee in ein echtes Projekt verwandelt.',
-              url: 'https://youthtopia.education/courses/start-your-own-thing', badge: 'All ages · free', source: 'YOUTHTOPIA' },
-            { id: 'momentum', icon: '🔥',
-              nameEN: 'Gaining Momentum and How to Keep Going (Youthtopia)',
-              nameDE: 'Momentum gewinnen und wie man dranbleibt (Youthtopia)',
-              descEN: 'What to do when your project feels stuck. Practical, honest, short.',
-              descDE: 'Was zu tun ist, wenn dein Projekt feststeckt. Praktisch, ehrlich, kurz.',
-              url: 'https://youthtopia.education/courses/gaining-momentum-and-howt-to-keep-going-with-Sophia', badge: 'All ages · free', source: 'YOUTHTOPIA' },
-            { id: 'habits', icon: '⚙️',
-              nameEN: 'Building Better Habits Masterclass (Youthtopia)',
-              nameDE: 'Bessere Gewohnheiten aufbauen Masterclass (Youthtopia)',
-              descEN: '4.9 stars from 14 reviews. Build the habits that support your PEP work.',
-              descDE: '4,9 Sterne aus 14 Bewertungen. Entwickle die Gewohnheiten, die deine PEP-Arbeit unterstützen.',
-              url: 'https://youthtopia.education/courses/building-better-habits', badge: 'All ages · free', source: 'YOUTHTOPIA' },
-            { id: 'income', icon: '💰',
-              nameEN: 'Income & Impact (Youthtopia)',
-              nameDE: 'Einnahmen & Wirkung (Youthtopia)',
-              descEN: 'How to think about making your project financially sustainable. Real and practical.',
-              descDE: 'Wie du darüber nachdenken kannst, dein Projekt finanziell nachhaltig zu machen.',
-              url: 'https://youthtopia.education/courses/income-impact', badge: 'All ages · free', source: 'YOUTHTOPIA' },
-            { id: 'images', icon: '📸',
-              nameEN: 'Stories Through Images (Youthtopia)',
-              nameDE: 'Geschichten durch Bilder (Youthtopia)',
-              descEN: 'How to document your PEP project visually — photography as storytelling.',
-              descDE: 'Wie du dein PEP-Projekt visuell dokumentierst — Fotografie als Storytelling.',
-              url: 'https://youthtopia.education/courses/stories-through-images', badge: 'All ages · free', source: 'YOUTHTOPIA' }
-          ]
-        },
-        {
-          titleEN: '🔭 Explore Any Topic — University-Level Platforms', titleDE: '🔭 Jedes Thema erkunden — Uni-Plattformen',
-          tools: [
-            { id: 'harvard-cat', icon: '🏛️',
-              nameEN: 'Harvard free course catalogue (100+ courses)',
-              nameDE: 'Harvards kostenloser Kurskatalog (100+ Kurse)',
-              descEN: 'Ancient philosophy, neuroscience, climate, justice, coding. Browse for your PEP topic. No age gate.',
-              descDE: 'Antike Philosophie, Neurowissenschaften, Klima, Gerechtigkeit, Coding. Für dein PEP-Thema stöbern.',
-              url: 'https://pll.harvard.edu/catalog/free', badge: '13+ · free audit', source: 'HARVARD — 100+ COURSES' },
-            { id: 'openlearn', icon: '🎓',
-              nameEN: 'OpenLearn — hundreds of free short courses (Open University)',
-              nameDE: 'OpenLearn — Hunderte kostenloser Kurzkurse (Open University)',
-              descEN: 'Creative writing to climate science to philosophy. Digital badges on completion. UK university quality.',
-              descDE: 'Von kreativem Schreiben über Klimawissenschaft bis Philosophie. Digitale Badges nach Abschluss.',
-              url: 'https://www.open.edu/openlearn', badge: '13+ · free badges', source: 'OPEN UNIVERSITY' },
-            { id: 'mit-ocw', icon: '🔬',
-              nameEN: 'MIT OpenCourseWare — 2,500+ university courses',
-              nameDE: 'MIT OpenCourseWare — 2.500+ Uni-Kurse',
-              descEN: 'No enrolment, no account. Open the course and use the materials. Best for self-directed 14–16.',
-              descDE: 'Keine Anmeldung, kein Konto. Kurs öffnen und Materialien nutzen. Am besten für selbstgesteuerte 14–16.',
-              url: 'https://ocw.mit.edu', badge: '14+ · open access', source: 'MIT — OPEN ACCESS' },
-            { id: 'teded-design', icon: '⚙️',
-              nameEN: 'TED-Ed design, engineering & technology lessons',
-              nameDE: 'TED-Ed Design, Engineering & Technologie Lektionen',
-              descEN: 'Browse hundreds of animated lessons to find something that connects to your PEP inquiry.',
-              descDE: 'Hunderte animierte Lektionen durchsuchen, um etwas zu finden, das mit deinem PEP-Thema verbunden ist.',
-              url: 'https://ed.ted.com/lessons?category=design-engineering-technology', badge: 'All ages · browse', source: 'TED-ED' }
-          ]
-        }
-      ]
-    },
-
-    // ── 9. PAID & CERTIFIED ────────────────────────────────────
-    {
-      id: 'paid',
-      icon: '🐠',
-      bg: 'bg-blue-600',
-      gradient: 'linear-gradient(135deg, #1D4ED8 0%, #1E40AF 100%)',
-      titleEN: 'Paid & Certified — Bali Ocean Courses', titleDE: 'Kostenpflichtig & Zertifiziert — Bali Ozean-Kurse',
-      subtitleEN: 'SSI-certified courses by the Coral Triangle Center — Bali marine conservation org. Online Zoom classes, open to divers and non-divers. All proceeds support CTC\'s conservation projects.',
-      subtitleDE: 'SSI-zertifizierte Kurse vom Coral Triangle Center — Bali Meresschutzorganisation. Online Zoom-Klassen, offen für Taucher und Nicht-Taucher. Alle Erlöse unterstützen die Schutzprojekte des CTC.',
-      sections: [
-        {
-          titleEN: 'Coral Triangle Center — IDR 1.5 million / USD 150 per person, per course', titleDE: 'Coral Triangle Center — IDR 1,5 Mio. / USD 150 pro Person, pro Kurs',
-          tools: [
-            { id: 'marine-eco', icon: '🐙',
-              nameEN: 'Marine Ecology — April 9, 2026',
-              nameDE: 'Meeresökologie — 9. April 2026',
-              descEN: '13:00–17:00 Bali time. 4-hour Zoom + exam. SSI Certification. Register: bit.ly/cdsonlinectc | Contact Farhan: +62 81138 302040',
-              descDE: '13:00–17:00 Bali-Zeit. 4-stündiges Zoom + Prüfung. SSI-Zertifizierung. Anmeldung: bit.ly/cdsonlinectc',
-              url: 'https://bit.ly/cdsonlinectc', badge: 'SSI Certified · PAID', source: 'CORAL TRIANGLE CENTER', paid: true },
-            { id: 'coral-id', icon: '🪸',
-              nameEN: 'Coral Identification — April 10, 2026',
-              nameDE: 'Korallenbestimmung — 10. April 2026',
-              descEN: '08:00–10:00 Bali time. 2-hour Zoom + exam. SSI Certification. Register: bit.ly/cdsonlinectc',
-              descDE: '08:00–10:00 Bali-Zeit. 2-stündiges Zoom + Prüfung. SSI-Zertifizierung.',
-              url: 'https://bit.ly/cdsonlinectc', badge: 'SSI Certified · PAID', source: 'CORAL TRIANGLE CENTER', paid: true },
-            { id: 'fish-id', icon: '🐟',
-              nameEN: 'Fish Identification — April 10, 2026',
-              nameDE: 'Fischbestimmung — 10. April 2026',
-              descEN: '10:00–12:00 Bali time. 2-hour Zoom + exam. SSI Certification. Special price for all 3 courses.',
-              descDE: '10:00–12:00 Bali-Zeit. 2-stündiges Zoom + Prüfung. SSI-Zertifizierung. Sonderpreis für alle 3 Kurse.',
-              url: 'https://bit.ly/cdsonlinectc', badge: 'SSI Certified · PAID', source: 'CORAL TRIANGLE CENTER', paid: true }
-          ]
-        }
-      ]
-    }
-
-  ] // end categories
-};
-
-// ═══════════════════════════════════════════════════════════════
-// STATE & HELPERS
-// ═══════════════════════════════════════════════════════════════
-let currentLang = 'en';
+let lang = 'en';
 let currentCatId = null;
 
-function t(tool, field) {
-  return currentLang === 'de' ? tool[field + 'DE'] : tool[field + 'EN'];
-}
+const L = (obj) => obj[lang] || obj['en'];
 
 function allTools() {
-  return DATA.categories.flatMap(cat =>
+  return CATS.flatMap(cat =>
     cat.sections.flatMap(sec =>
-      sec.tools.map(tool => ({ ...tool, cat }))
+      sec.tools.map(t => ({ ...t, cat }))
     )
   );
 }
 
 // ═══════════════════════════════════════════════════════════════
-// UI BUILDERS
+// RENDER HELPERS
 // ═══════════════════════════════════════════════════════════════
-
-function buildCategoryGrid() {
-  const grid = document.getElementById('category-grid');
-  grid.innerHTML = DATA.categories.map(cat => `
-    <button onclick="showCategory('${cat.id}')" class="cat-card text-left rounded-3xl p-5 shadow-md hover:shadow-xl cursor-pointer border-0 text-white relative overflow-hidden group" style="background: ${cat.gradient}; min-height: 130px;">
-      <div class="absolute -right-4 -bottom-4 text-6xl opacity-20 group-hover:opacity-30 transition-opacity select-none">${cat.icon}</div>
-      <div class="text-3xl mb-3">${cat.icon}</div>
-      <div class="font-display font-bold text-base leading-tight mb-1">${t(cat, 'title')}</div>
-      <div class="text-white/70 text-xs leading-snug line-clamp-2">${t(cat, 'subtitle').split('—')[0].trim()}</div>
-      <div class="mt-2 text-white/50 text-xs font-bold">${cat.sections.flatMap(s=>s.tools).length} resources →</div>
-    </button>
-  `).join('');
+function accentOf(cat) {
+  return cat.accent || '#6366F1';
 }
 
-function buildToolCard(tool, cat) {
-  const isPaid = tool.paid;
-  const borderColor = isPaid ? '#1D4ED8' : cat.gradient.match(/#[0-9A-F]{6}/i)?.[0] || '#6366F1';
+function buildCard(tool, cat, highlightQ) {
+  const a = accentOf(cat);
+  const name = highlightQ ? hl(L(tool).name, highlightQ) : L(tool).name;
+  const desc = highlightQ ? hl(L(tool).desc, highlightQ) : L(tool).desc;
+  const openLabel = lang === 'de' ? 'Link öffnen →' : 'Open link →';
+  const localBadge = tool.local
+    ? `<span class="inline-block px-2 py-0.5 rounded-full bg-green-100 text-green-700 text-[10px] font-bold">🌴 BALI LOCAL</span>`
+    : '';
+  const paidBadge = tool.paid
+    ? `<span class="inline-block px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-[10px] font-bold">💳 PAID</span>`
+    : '';
+  const secondBtn = (tool.urlB && tool.labelB)
+    ? `<a href="${tool.urlB}" target="_blank" rel="noopener noreferrer"
+         class="flex-shrink-0 text-xs font-bold py-2 px-3 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors whitespace-nowrap">
+         ${tool.labelB}
+       </a>`
+    : '';
+
   return `
-    <div class="tool-card bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex flex-col gap-3" style="border-left: 4px solid ${borderColor};">
+    <div class="tool-card bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex flex-col gap-3"
+         style="border-left:4px solid ${a}">
       <div class="flex items-start justify-between gap-2">
-        <div class="flex items-center gap-2">
-          <span class="text-2xl leading-none">${tool.icon}</span>
-          <div>
-            <div class="font-bold text-gray-900 text-sm leading-snug">${t(tool, 'name')}</div>
-            <div class="text-xs text-gray-400 mt-0.5">${tool.source}</div>
+        <div class="flex items-center gap-2 min-w-0">
+          <span class="text-2xl leading-none flex-shrink-0">${tool.icon}</span>
+          <div class="min-w-0">
+            <div class="font-bold text-gray-900 text-sm leading-snug">${name}</div>
+            <div class="text-xs text-gray-400 mt-0.5 truncate">${tool.src}</div>
           </div>
         </div>
         <div class="flex flex-col items-end gap-1 flex-shrink-0">
-          <span class="badge px-2 py-0.5 rounded-full text-white text-[10px]" style="background:${borderColor}">${tool.badge}</span>
-          ${tool.localBadge ? `<span class="badge px-2 py-0.5 rounded-full bg-green-100 text-green-700 text-[10px]">🌴 ${tool.localBadge}</span>` : ''}
-          ${isPaid ? `<span class="badge px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-[10px]">💳 PAID</span>` : ''}
+          <span class="inline-block px-2 py-0.5 rounded-full text-white text-[10px] font-bold whitespace-nowrap"
+                style="background:${a}">${tool.badge}</span>
+          ${localBadge}
+          ${paidBadge}
         </div>
       </div>
-      <p class="text-gray-600 text-xs leading-relaxed">${t(tool, 'desc')}</p>
-      <div class="flex gap-2 mt-auto">
-        <a href="${tool.url}" target="_blank" rel="noopener" class="flex-1 text-center text-xs font-bold py-2 px-3 rounded-xl text-white transition-opacity hover:opacity-90" style="background: ${borderColor}">
-          ${currentLang === 'de' ? 'Link öffnen →' : 'Open link →'}
-        </a>
-        ${tool.urlB ? `<a href="${tool.urlB}" target="_blank" rel="noopener" class="flex-1 text-center text-xs font-bold py-2 px-3 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors">${tool.labelB}</a>` : ''}
+      <p class="text-gray-600 text-xs leading-relaxed">${desc}</p>
+      <div class="flex gap-2 mt-auto flex-wrap">
+        <a href="${tool.url}" target="_blank" rel="noopener noreferrer"
+           class="flex-1 text-center text-xs font-bold py-2 px-3 rounded-xl text-white hover:opacity-90 transition-opacity whitespace-nowrap"
+           style="background:${a}">${openLabel}</a>
+        ${secondBtn}
       </div>
     </div>`;
+}
+
+function hl(text, q) {
+  if (!q) return text;
+  const re = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'), 'gi');
+  return text.replace(re, m => `<mark>${m}</mark>`);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// VIEWS
+// ═══════════════════════════════════════════════════════════════
+function buildCategoryGrid() {
+  const el = document.getElementById('category-grid');
+  el.innerHTML = CATS.map(cat => {
+    const total = cat.sections.flatMap(s => s.tools).length;
+    const resWord = lang === 'de' ? 'Ressourcen' : 'resources';
+    return `
+      <button onclick="showCategory('${cat.id}')"
+        class="cat-card text-left rounded-3xl p-5 shadow-md hover:shadow-xl cursor-pointer text-white relative overflow-hidden group border-0"
+        style="background:${cat.gradient}; min-height:130px">
+        <div class="absolute -right-4 -bottom-4 text-6xl opacity-20 group-hover:opacity-30 transition-opacity select-none">${cat.icon}</div>
+        <div class="text-3xl mb-3 leading-none">${cat.icon}</div>
+        <div class="font-display font-bold text-base leading-tight mb-1">${L(cat).title}</div>
+        <div class="text-white/70 text-xs leading-snug line-clamp-2">${L(cat).subtitle.split('—')[0].trim()}</div>
+        <div class="mt-2 text-white/50 text-xs font-bold">${total} ${resWord} →</div>
+      </button>`;
+  }).join('');
 }
 
 function showHome() {
@@ -705,136 +776,103 @@ function showHome() {
   document.getElementById('view-home').classList.remove('hidden');
   document.getElementById('view-category').classList.add('hidden');
   document.getElementById('search-results').classList.add('hidden');
-  document.getElementById('search-input') && (document.getElementById('search-input').value = '');
+  const si = document.getElementById('search-input');
+  if (si) si.value = '';
   buildCategoryGrid();
-  updateLangUI();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  updateStaticText();
+  window.scrollTo({top:0, behavior:'smooth'});
 }
 
 function showCategory(catId) {
-  const cat = DATA.categories.find(c => c.id === catId);
+  const cat = CATS.find(c => c.id === catId);
   if (!cat) return;
   currentCatId = catId;
 
   document.getElementById('view-home').classList.add('hidden');
   document.getElementById('view-category').classList.remove('hidden');
 
-  document.getElementById('cat-header').style.background = cat.gradient;
-  document.getElementById('cat-icon').textContent = cat.icon;
-  document.getElementById('cat-title').textContent = t(cat, 'title');
-  document.getElementById('cat-subtitle').textContent = t(cat, 'subtitle');
   const total = cat.sections.flatMap(s => s.tools).length;
-  document.getElementById('cat-count').textContent = `${total} ${currentLang === 'de' ? 'Ressourcen' : 'resources'}`;
+  document.getElementById('cat-header').style.background = cat.gradient;
+  document.getElementById('cat-icon').textContent     = cat.icon;
+  document.getElementById('cat-title').textContent    = L(cat).title;
+  document.getElementById('cat-subtitle').textContent = L(cat).subtitle;
+  document.getElementById('cat-count').textContent    =
+    `${total} ${lang === 'de' ? 'Ressourcen verfügbar' : 'resources available'}`;
 
-  const sectionsEl = document.getElementById('cat-sections');
-  const accentColor = cat.gradient.match(/#[0-9A-F]{6}/i)?.[0] || '#6366F1';
-
-  sectionsEl.innerHTML = cat.sections.map(section => `
+  const a = accentOf(cat);
+  document.getElementById('cat-sections').innerHTML = cat.sections.map(sec => `
     <div class="mb-8">
-      <h3 class="section-title font-display font-bold text-gray-700 text-sm mb-4" style="color: ${accentColor}">
-        ${t(section, 'title')}
-      </h3>
+      <h3 class="sec-title font-display font-bold text-sm mb-4" style="color:${a}">${L(sec)}</h3>
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-        ${section.tools.map(tool => buildToolCard(tool, cat)).join('')}
+        ${sec.tools.map(t => buildCard(t, cat, null)).join('')}
       </div>
-    </div>
-  `).join('');
+    </div>`).join('');
 
-  updateLangUI();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  updateStaticText();
+  window.scrollTo({top:0, behavior:'smooth'});
 }
 
 // ═══════════════════════════════════════════════════════════════
 // SEARCH
 // ═══════════════════════════════════════════════════════════════
-function handleSearch(query) {
-  const q = query.trim().toLowerCase();
-  const resultsEl = document.getElementById('search-results');
-  const listEl = document.getElementById('search-list');
+function handleSearch(raw) {
+  const q   = raw.trim().toLowerCase();
+  const res = document.getElementById('search-results');
+  const lst = document.getElementById('search-list');
+  const tit = document.getElementById('search-title');
 
-  if (!q) {
-    resultsEl.classList.add('hidden');
-    listEl.innerHTML = '';
-    return;
-  }
+  if (!q) { res.classList.add('hidden'); lst.innerHTML = ''; return; }
 
-  const matches = allTools().filter(tool => {
-    const name = (t(tool, 'name') || '').toLowerCase();
-    const desc = (t(tool, 'desc') || '').toLowerCase();
-    const source = (tool.source || '').toLowerCase();
-    return name.includes(q) || desc.includes(q) || source.includes(q);
+  const hits = allTools().filter(t => {
+    const n = L(t).name.toLowerCase();
+    const d = L(t).desc.toLowerCase();
+    const s = (t.src || '').toLowerCase();
+    return n.includes(q) || d.includes(q) || s.includes(q);
   });
 
-  const highlight = (text) => text.replace(new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), m => `<mark class="highlight">${m}</mark>`);
+  tit.textContent = `${hits.length} ${lang === 'de' ? 'Ergebnisse für' : 'results for'} "${raw}"`;
 
-  document.getElementById('search-title').textContent =
-    `${matches.length} ${currentLang === 'de' ? 'Ergebnisse für' : 'results for'} "${query}"`;
+  lst.innerHTML = hits.length
+    ? hits.map(t => buildCard(t, t.cat, q)).join('')
+    : `<div class="col-span-3 text-center text-gray-400 py-12 text-sm">
+         ${lang === 'de' ? 'Keine Ergebnisse gefunden.' : 'No results found.'}
+       </div>`;
 
-  listEl.innerHTML = matches.map(tool => {
-    const cat = tool.cat;
-    const borderColor = cat.gradient.match(/#[0-9A-F]{6}/i)?.[0] || '#6366F1';
-    const name = highlight(t(tool, 'name'));
-    const desc = highlight(t(tool, 'desc'));
-    return `
-      <div class="tool-card bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex flex-col gap-3" style="border-left: 4px solid ${borderColor}">
-        <div class="flex items-start justify-between gap-2">
-          <div class="flex items-center gap-2">
-            <span class="text-2xl">${tool.icon}</span>
-            <div>
-              <div class="font-bold text-gray-900 text-sm leading-snug">${name}</div>
-              <div class="text-xs text-gray-400 mt-0.5">${tool.source}</div>
-            </div>
-          </div>
-          <span class="badge px-2 py-0.5 rounded-full text-white text-[10px]" style="background:${borderColor}">${tool.badge}</span>
-        </div>
-        <p class="text-gray-600 text-xs leading-relaxed">${desc}</p>
-        <div class="flex items-center justify-between gap-2">
-          <span class="text-xs text-gray-400">${cat.icon} ${t(cat,'title')}</span>
-          <a href="${tool.url}" target="_blank" rel="noopener" class="text-xs font-bold py-1.5 px-3 rounded-xl text-white hover:opacity-90 transition-opacity" style="background: ${borderColor}">
-            ${currentLang === 'de' ? 'Öffnen →' : 'Open →'}
-          </a>
-        </div>
-      </div>`;
-  }).join('') || `<div class="col-span-3 text-center text-gray-400 py-10 text-sm">${currentLang === 'de' ? 'Keine Ergebnisse gefunden.' : 'No results found.'}</div>`;
-
-  resultsEl.classList.remove('hidden');
+  res.classList.remove('hidden');
 }
 
 // ═══════════════════════════════════════════════════════════════
 // LANGUAGE
 // ═══════════════════════════════════════════════════════════════
 function toggleLang() {
-  currentLang = currentLang === 'en' ? 'de' : 'en';
-  document.getElementById('lang-toggle').textContent = currentLang === 'en' ? 'DE' : 'EN';
-  document.documentElement.lang = currentLang;
-  updateLangUI();
+  lang = lang === 'en' ? 'de' : 'en';
+  document.getElementById('lang-toggle').textContent = lang === 'en' ? 'DE' : 'EN';
+  document.documentElement.lang = lang;
+  updateStaticText();
   if (currentCatId) showCategory(currentCatId);
-  else { buildCategoryGrid(); }
+  else buildCategoryGrid();
 }
 
-function updateLangUI() {
-  const isDE = currentLang === 'de';
-  document.getElementById('home-title').textContent = isDE ? 'Was willst du lernen?' : 'What do you want to learn?';
-  document.getElementById('home-sub').textContent = isDE
+function updateStaticText() {
+  const de = lang === 'de';
+  const ht = document.getElementById('home-title');
+  const hs = document.getElementById('home-sub');
+  const bl = document.getElementById('back-label');
+  if (ht) ht.textContent = de ? 'Was willst du lernen?' : 'What do you want to learn?';
+  if (hs) hs.textContent = de
     ? 'Wähle eine Kategorie — alle Ressourcen sind kostenlos und öffnen sich im Browser.'
     : 'Pick a category — all resources are free and open in your browser.';
-  document.getElementById('back-label').textContent = isDE ? 'Alle Kategorien' : 'All categories';
-  const searchInputs = document.querySelectorAll('#search-input, input[type="text"]');
-  searchInputs.forEach(el => { el.placeholder = isDE ? 'Ressourcen suchen…' : 'Search resources…'; });
+  if (bl) bl.textContent = de ? 'Alle Kategorien' : 'All categories';
+  document.querySelectorAll('input[type="search"]').forEach(el => {
+    el.placeholder = de ? 'Ressourcen suchen…' : 'Search resources…';
+  });
 }
 
 // ═══════════════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════════════
 buildCategoryGrid();
-updateLangUI();
+updateStaticText();
 </script>
-
-<!-- FOOTER -->
-<footer class="mt-12 border-t border-gray-200 py-6 text-center">
-  <p class="text-xs text-gray-400">Future Human School Bali · Resource Hub · Term 4 · March 30 – June 5, 2026</p>
-  <p class="text-xs text-gray-400 mt-1">Nature has been solving design problems for 3.8 billion years. You have until June 5th. 🌿</p>
-</footer>
-
 </body>
 </html>
